@@ -8,7 +8,7 @@ import {
 	TextInput,
 } from "react-native";
 
-//  import * as ImagePicker from "expo-image-picker";
+import * as ImagePicker from "expo-image-picker";
 import { Text, View } from "../../components/Themed";
 import globalStyles from "../../assets/css/globalStyles";
 import { SetStateAction, useState } from "react";
@@ -19,8 +19,8 @@ import BackButton from "../../components/buttons/BackButton";
 import { useNavigation } from "expo-router";
 import { IRegister } from "../interfaces/types";
 import { useAuth } from "../services/context/AuthContext";
-//  import PhotoSourceModal from "../../components/PhotoSourceModal";
-//  import CameraScreen from "./camera";
+import CameraScreen from "./camera";
+import PhotoSourceModal from "@/components/custom/PhotoSourceModal";
 
 const initialState = {
 	selectedImage: "",
@@ -80,25 +80,25 @@ export default function RegisterScreen() {
 			setIsCameraVisible(true);
 		}
 
-		//   else if (selectedSource === 'gallery') {
-		// 	 const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-		// 	 if (!permissionResult.granted) {
-		// 		alert("Permission to access camera roll is required!");
-		// 		return;
-		// 	 }
+		else if (selectedSource === 'gallery') {
+			const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+			if (!permissionResult.granted) {
+				alert("Permission to access camera roll is required!");
+				return;
+			}
 
-		// 	 const pickerResult = await ImagePicker.launchImageLibraryAsync({
-		// 		mediaTypes: ImagePicker.MediaTypeOptions.Images,
-		// 		quality: 1,
-		// 	 });
+			const pickerResult = await ImagePicker.launchImageLibraryAsync({
+				mediaTypes: ImagePicker.MediaTypeOptions.Images,
+				quality: 1,
+			});
 
-		// 	 if (!pickerResult.canceled) {
-		// 		const imageUri = pickerResult.assets[0].uri;
-		// 		changeHandler("selectedImage", imageUri);
-		// 	 }
+			if (!pickerResult.canceled) {
+				const imageUri = pickerResult.assets[0].uri;
+				changeHandler("selectedImage", imageUri);
+			}
 
-		// 	 setIsModalVisible(false);
-		//   }
+			setIsModalVisible(false);
+		}
 
 		else if (selectedSource === 'cancel') {
 			setIsModalVisible(false);
@@ -154,7 +154,7 @@ export default function RegisterScreen() {
 			<ImageBackground source={require("../../assets/images/background.png")} style={globalStyles.background}>
 				<ScrollView contentContainerStyle={globalStyles.scroll_view}>
 					<BackButton title={"Назад"} source={require("../../assets/images/back-icon.png")} goBack={handleBack} />
-					{/* <PhotoSourceModal isVisible={isModalVisible} handleChoice={handleModalSelection} /> */}
+					<PhotoSourceModal isVisible={isModalVisible} handleChoice={handleModalSelection} />
 					<View style={globalStyles.container}>
 						<Image source={require("../../assets/images/simple-logo.png")} style={globalStyles.simple_logo} />
 						<Text style={globalStyles.title}>Регистрирај се</Text>
@@ -210,7 +210,7 @@ export default function RegisterScreen() {
 						<Modal
 							visible={isCameraVisible}
 							onRequestClose={() => setIsCameraVisible(false)}>
-							{/* <CameraScreen style={{ height: '100%', width: '100%' }} onCapture={handleCapture} closeCamera={() => setIsCameraVisible(false)}/> */}
+							<CameraScreen style={{ height: '100%', width: '100%' }} onCapture={handleCapture} closeCamera={() => setIsCameraVisible(false)} />
 						</Modal>
 					</View>
 				</ScrollView>

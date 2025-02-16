@@ -1,5 +1,6 @@
 import React, { SetStateAction } from "react";
 import { View, Image, TouchableOpacity, StyleSheet } from "react-native";
+
 interface IProps {
 	onPress: () => Promise<void>;
 	imageUri: string;

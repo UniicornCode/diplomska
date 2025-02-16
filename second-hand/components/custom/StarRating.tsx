@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 // @ts-ignore
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Icon } from '@rneui/themed';
 
 interface StarRatingProps {
 	rating: number;

@@ -7,6 +7,7 @@ interface IProps {
 	title: string;
 	name: string;
 }
+
 export default function PrimaryButton({ title, name }: IProps) {
 	const navigation = useNavigation();
 

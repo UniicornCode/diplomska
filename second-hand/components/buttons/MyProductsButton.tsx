@@ -2,15 +2,18 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import globalStyles from "../../assets/css/globalStyles";
 // @ts-ignore
-import Icon from "react-native-vector-icons/FontAwesome";
+import { Icon } from '@rneui/themed';
+import Colors from "@/constants/Colors";
+
 interface IProps {
 	onPress: () => void;
 }
+
 export default function MyProductsButton({ onPress }: IProps) {
 	return (
 		<TouchableOpacity style={[styles.button, globalStyles.shadow]} onPress={onPress}>
 			<Text style={[globalStyles.text_blue, styles.text]}>Мои продукти</Text>
-			<Icon name={"bookmark"} size={20} color={"#7891D3"} />
+			<Icon name={"bookmark"} size={20} color={Colors.primaryColor} type="font-awesome" />
 		</TouchableOpacity>
 	);
 }

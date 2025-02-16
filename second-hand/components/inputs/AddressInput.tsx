@@ -10,10 +10,9 @@ import {
 	Button
 } from "react-native";
 // @ts-ignore
-import Icon from "react-native-vector-icons/FontAwesome";
+import { Icon } from '@rneui/themed';
 import globalStyles from "../../assets/css/globalStyles";
-// import CameraScreen from "../app/pages/camera";
-// import MapScreen from "./MapScreen";
+// import MapScreen from "../custom/MapScreen";
 
 export default function AddressInput({
 	value,
@@ -54,7 +53,7 @@ export default function AddressInput({
 				<Text style={globalStyles.text_white}>Одбери адреса</Text>
 			</TouchableOpacity>
 			<TouchableOpacity style={styles.infoIcon} onPress={handleInfoPress}>
-				<Icon name="info-circle" size={20} color="white" />
+				<Icon name="info-circle" size={20} color="white" type="font-awesome" />
 			</TouchableOpacity>
 			<Modal visible={showInfo} transparent animationType={"fade"}>
 				<TouchableWithoutFeedback onPress={handleOutsidePress}>
