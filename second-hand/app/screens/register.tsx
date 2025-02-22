@@ -136,7 +136,7 @@ export default function RegisterScreen() {
 		}
 		try {
 			await signUp(data);
-			navigator.navigate("pages/login" as never); // note: the "as never" type casting seems odd and may not be necessary.
+			navigator.navigate("screens/login" as never); // note: the "as never" type casting seems odd and may not be necessary.
 		} catch (error: any) {
 			const replacedMessage = error?.message?.replace(/^Firebase: | \(auth\/[^\)]+\)/g, "");
 

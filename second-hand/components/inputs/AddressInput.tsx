@@ -12,7 +12,7 @@ import {
 // @ts-ignore
 import { Icon } from '@rneui/themed';
 import globalStyles from "../../assets/css/globalStyles";
-// import MapScreen from "../custom/MapScreen";
+import MapScreen from "../custom/MapScreen";
 
 export default function AddressInput({
 	value,
@@ -66,7 +66,7 @@ export default function AddressInput({
 			</Modal>
 			<Modal
 				visible={isMapVisible}>
-				{/* <MapScreen style={{ height: '100%', width: '100%' }} saveAddress={saveAddress} closeMap={() => setIsMapVisible(false)} /> */}
+				<MapScreen style={{ height: '100%', width: '100%' }} saveAddress={saveAddress} closeMap={() => setIsMapVisible(false)} />
 			</Modal>
 		</View>
 	);
