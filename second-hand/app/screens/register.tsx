@@ -138,9 +138,12 @@ export default function RegisterScreen() {
 			await signUp(data);
 			navigator.navigate("screens/login" as never); // note: the "as never" type casting seems odd and may not be necessary.
 		} catch (error: any) {
-			const replacedMessage = error?.message?.replace(/^Firebase: | \(auth\/[^\)]+\)/g, "");
-
-			alert(replacedMessage); // You might want to be more descriptive based on the error.
+			if (error.code === 'auth/email-already-in-use') {
+				alert("Емаилот веќе се користи. Погледнете дали сте веќе регистрирани.");
+			} else {
+				const replacedMessage = error?.message?.replace(/^Firebase: | \(auth\/[^\)]+\)/g, "");
+				alert(replacedMessage || "Грешка при регистрација!");
+			}
 		}
 	};
 

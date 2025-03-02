@@ -8,8 +8,9 @@ import {
 	User,
 } from "firebase/auth";
 import { ILogin, IRegister } from "../../interfaces/types";
-import { getDatabase, onValue, ref, set, off } from "firebase/database";
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
+import { doc, setDoc, onSnapshot } from "firebase/firestore";
+import { app, auth, db, storage } from "../../firebase";
 
 interface AuthContextType {
 	user: User | null;
@@ -29,8 +30,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const [user, setUser] = useState<User | null>(null);
 	const [userData, setUserData] = useState<Partial<IRegister> | null>(null);
 
-	const auth = getAuth(); // get the Auth instance
-
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, setUser); // Refactored for Firebase v9
 		return unsubscribe; // the function returned by onAuthStateChanged is the unsubscribe function
@@ -49,7 +48,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	};
 
 	const uploadImageAndGetURL = async (uri: string, uid: string) => {
-		const storage = getStorage();
 		const imageRef = storageRef(storage, `profileImages/${uid}`);
 
 		const response = await fetch(uri);
@@ -71,12 +69,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				throw new Error("Failed to get UID after registration.");
 			}
 
-			const profileImageUrl = await uploadImageAndGetURL(additionalData.selectedImage, uid);
-			additionalData.selectedImage = profileImageUrl;
-			additionalData.email = additionalData.email;
-			const db = getDatabase();
-			const userRef = ref(db, "users/" + uid);
-			await set(userRef, additionalData);
+			// const profileImageUrl = await uploadImageAndGetURL(additionalData.selectedImage, uid);
+			// additionalData.selectedImage = profileImageUrl;
+
+			await setDoc(doc(db, "users", uid), {
+				...additionalData, // Save all additional user data
+				createdAt: new Date().toISOString(), // Optional: Store account creation timestamp
+			});
 		} catch (error: any) {
 			console.error("Error in signUp: ", error.message);
 			throw error; // Propagate the error so it can be caught outside.
@@ -85,18 +84,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 	useEffect(() => {
 		if (user && user.uid) {
-			const db = getDatabase();
-			const userRef = ref(db, "users/" + user.uid);
+			const userDocRef = doc(db, "users", user.uid);  // Reference to the Firestore document
 
-			const unsubscribe = onValue(userRef, (snapshot) => {
-				const data = snapshot.val();
-				setUserData(data);
+			// Subscribe to real-time updates of the user's document
+			const unsubscribe = onSnapshot(userDocRef, (snapshot) => {
+				if (snapshot.exists()) {
+					setUserData(snapshot.data());  // Set the data to state if document exists
+				} else {
+					setUserData(null);  // If document doesn't exist, clear the user data
+				}
 			});
 
-			// Return a cleanup function to unsubscribe from the realtime listener
-			return () => off(userRef, "value", unsubscribe);
+			// Return a cleanup function to unsubscribe when component unmounts
+			return () => unsubscribe();
 		} else {
-			setUserData(null); // clear userData if no user is logged in
+			setUserData(null);  // Clear userData if no user is logged in
 		}
 	}, [user]);
 
