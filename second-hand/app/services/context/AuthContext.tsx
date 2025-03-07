@@ -11,6 +11,7 @@ import { ILogin, IRegister } from "../../interfaces/types";
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, setDoc, onSnapshot } from "firebase/firestore";
 import { app, auth, db, storage } from "../../firebase";
+import * as FileSystem from "expo-file-system";
 
 interface AuthContextType {
 	user: User | null;
@@ -48,15 +49,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	};
 
 	const uploadImageAndGetURL = async (uri: string, uid: string) => {
-		const imageRef = storageRef(storage, `profileImages/${uid}`);
+		try {
+			console.log("Original Image URI:", uri);
 
-		const response = await fetch(uri);
-		const blob = await response.blob();
+			// Read file as Base64
+			const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
 
-		await uploadBytes(imageRef, blob);
-		const downloadURL = await getDownloadURL(imageRef);
+			// Convert Base64 to a Blob
+			const byteCharacters = atob(base64);
+			const byteNumbers = new Array(byteCharacters.length).fill(null).map((_, i) => byteCharacters.charCodeAt(i));
+			const byteArray = new Uint8Array(byteNumbers);
+			const blob = new Blob([byteArray], { type: "image/jpeg" });
 
-		return downloadURL;
+			const imageRef = storageRef(storage, `profileImages/${uid}`);
+			await uploadBytes(imageRef, blob);
+			const downloadURL = await getDownloadURL(imageRef);
+
+			return downloadURL;
+		} catch (error) {
+			console.error("Error in uploadImageAndGetURL:", error);
+			throw error;
+		}
 	};
 
 	const signUp = async (data: IRegister) => {

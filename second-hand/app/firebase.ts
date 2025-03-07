@@ -20,14 +20,12 @@ const firebaseConfig = {
 };
 
 // Ensure Firebase is initialized only once
-// let app: FirebaseApp;
-// if (!getApps().length) {
-// 	app = initializeApp(firebaseConfig);
-// } else {
-// 	app = getApp(); // Use the existing app instance if it exists
-// }
-
-let app = initializeApp(firebaseConfig);
+let app: FirebaseApp;
+if (!getApps().length) {
+	app = initializeApp(firebaseConfig);
+} else {
+	app = getApp(); // Use the existing app instance if it exists
+}
 
 // Initialize Auth with AsyncStorage for persistence
 const auth = initializeAuth(app, {
