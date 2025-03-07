@@ -147,16 +147,13 @@ export default function RegisterScreen() {
 		}
 	};
 
-	const handleBack = () => {
-		navigator.navigate("index" as never);
-	};
 	return (
 		<KeyboardAvoidingView
 			style={globalStyles.background_transparent}
 			behavior={Platform.OS === "ios" ? "padding" : "height"}>
 			<ImageBackground source={require("../../assets/images/background.png")} style={globalStyles.background}>
 				<ScrollView contentContainerStyle={globalStyles.scroll_view}>
-					<BackButton title={"Назад"} source={require("../../assets/images/back-icon.png")} goBack={handleBack} />
+					<BackButton title={"Назад"} source={require("../../assets/images/back-icon.png")} />
 					<PhotoSourceModal isVisible={isModalVisible} handleChoice={handleModalSelection} />
 					<View style={globalStyles.container}>
 						<Image source={require("../../assets/images/simple-logo.png")} style={globalStyles.simple_logo} />

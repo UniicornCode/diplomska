@@ -11,11 +11,11 @@ export default function SimpleProductCard(product: IProduct) {
 		if (product.id) {
 			navigation.navigate({
 				name: "index",
-				params: { screen: "pages/list-of-products", id: product.category, product: product },
+				params: { screen: "screens/list-of-products", id: product.category, product: product },
 			} as never);
 		}
 	};
-	
+
 	return (
 		<TouchableOpacity style={[globalStyles.simple_product, globalStyles.shadow]} onPress={handleNavigation}>
 			<Image source={{ uri: product.image }} style={globalStyles.cloth_image} />

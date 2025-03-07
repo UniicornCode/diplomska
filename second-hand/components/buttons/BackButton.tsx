@@ -2,11 +2,13 @@ import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import globalStyles from "../../assets/css/globalStyles";
 import { useNavigation } from "expo-router";
+
 interface IProps {
 	title: string;
 	source: any;
 	goBack?: () => void;
 }
+
 export default function BackButton({ title, source, goBack }: IProps) {
 	const navigation = useNavigation();
 

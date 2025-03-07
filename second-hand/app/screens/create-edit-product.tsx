@@ -19,7 +19,7 @@ import { IProduct, categories, sizes } from "../interfaces/types";
 import { Picker } from "@react-native-picker/picker";
 import ColorPicker from "react-native-wheel-color-picker";
 import { useAuth } from "../services/context/AuthContext";
-import { getDatabase, ref, set, push } from "firebase/database";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
 import PhotoSourceModal from "@/components/custom/PhotoSourceModal";
 import CameraScreen from "./camera";
 
@@ -114,20 +114,17 @@ export default function CreateEditProduct() {
 			return;
 		}
 		try {
-			const database = getDatabase();
+			const db = getFirestore();
 			const newProduct = { ...data, userId: user.uid };
-			const productsRef = ref(database, "products/");
-			const newProductRef = push(productsRef);
-			await set(newProductRef, newProduct);
-			alert("Успешно додадовте производ")
-			navigator.navigate("index" as never);
+
+			// Reference the "products" collection and add the new document
+			await addDoc(collection(db, "products"), newProduct);
+
+			alert("Успешно додадовте производ");
+			navigator.navigate("screens/list-of-products" as never);
 		} catch (error: any) {
 			alert(error.message);
 		}
-	};
-
-	const handleBack = () => {
-		navigator.navigate("index" as never);
 	};
 
 	return (
@@ -136,7 +133,7 @@ export default function CreateEditProduct() {
 			behavior={Platform.OS === "ios" ? "padding" : "height"}>
 			<ImageBackground source={require("../../assets/images/background.png")} style={globalStyles.background}>
 				<ScrollView contentContainerStyle={globalStyles.scroll_view}>
-					<BackButton title={"Назад"} source={require("../../assets/images/back-icon.png")} goBack={handleBack} />
+					<BackButton title={"Назад"} source={require("../../assets/images/back-icon.png")} />
 					<PhotoSourceModal isVisible={isModalVisible} handleChoice={handleModalSelection} />
 					<View style={globalStyles.container}>
 						<Text style={globalStyles.title}>Додади производ</Text>

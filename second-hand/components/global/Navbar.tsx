@@ -11,7 +11,7 @@ export default function Navbar() {
 	const handleOpenProfile = () => {
 		//TODO take information about user and navigate to profile page
 		// setUserId(user?.uid);
-		navigation.navigate("pages/user-profile" as never);
+		navigation.navigate("screens/user-profile" as never);
 	};
 
 	return (

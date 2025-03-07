@@ -9,7 +9,6 @@ interface IProps {
 }
 
 export default function CategoryButton({ title, onPress }: IProps) {
-	const navigation = useNavigation();
 
 	return (
 		<TouchableOpacity style={[globalStyles.category_button, globalStyles.shadow]} onPress={onPress}>

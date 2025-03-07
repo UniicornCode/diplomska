@@ -33,7 +33,7 @@ export default function LoginScreen() {
 	const handleLogin = async () => {
 		try {
 			await signIn(data);
-			navigation.navigate("index" as never);
+			navigation.navigate("(tabs)" as never)
 		} catch (error: any) {
 			// Check if the error is an instance of AuthError
 			if (error.code === "auth/wrong-password" || error.code === "auth/user-not-found") {
@@ -45,8 +45,12 @@ export default function LoginScreen() {
 	};
 
 	const handleBack = () => {
-		navigation.navigate("index" as never);
+		navigation.reset({
+			index: 0, // The index of the active screen (in this case, the tabs screen)
+			routes: [{ name: "(tabs)" }], // Reset to the tabs screen
+		});
 	};
+
 	return (
 		<KeyboardAvoidingView
 			style={globalStyles.background_transparent}

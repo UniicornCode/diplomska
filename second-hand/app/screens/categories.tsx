@@ -20,15 +20,11 @@ export default function Categories() {
 	const navigator = useNavigation();
 	const { user } = useAuth();
 
-	const handleNavigation = (name: string) => {
+	const handleNavigation = (category: string) => {
 		navigator.navigate({
-			name: "index",
-			params: { screen: "pages/list-of-products", id: name },
+			name: "screens/list-of-products",
+			params: { category },
 		} as never);
-	};
-
-	const handleBack = () => {
-		navigator.navigate("index" as never);
 	};
 
 	const windowHeight = Dimensions.get("window").height;
@@ -38,7 +34,7 @@ export default function Categories() {
 		<View style={globalStyles.background_transparent}>
 			<ImageBackground source={require("../../assets/images/background.png")} style={globalStyles.background}>
 				{!user && (
-					<BackButton title={"Назад"} source={require("../../assets/images/back-icon.png")} goBack={handleBack} />
+					<BackButton title={"Назад"} source={require("../../assets/images/back-icon.png")} />
 				)}
 				<View style={[globalStyles.container, globalStyles.shadow]}>
 					<Text style={globalStyles.title}>Категории</Text>
