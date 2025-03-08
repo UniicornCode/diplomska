@@ -9,7 +9,7 @@ export default function ContactFooter(user: IRegister) {
 	const handleSeller = () => {
 		//TODO open the page of the selected sellers cloth
 		navigation.navigate({
-			name: "pages/seller",
+			name: "screens/seller",
 			params: { user: user },
 		} as never);
 	};

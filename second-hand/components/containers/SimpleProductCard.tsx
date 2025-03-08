@@ -10,8 +10,8 @@ export default function SimpleProductCard(product: IProduct) {
 	const handleNavigation = () => {
 		if (product.id) {
 			navigation.navigate({
-				name: "index",
-				params: { screen: "screens/list-of-products", id: product.category, product: product },
+				name: "screens/product",
+				params: { product: JSON.stringify(product) }, // Stringify the product object
 			} as never);
 		}
 	};

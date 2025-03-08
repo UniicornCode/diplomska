@@ -16,7 +16,6 @@ export default function ListOfProducts() {
 
 	const fetchProductsByCategory = async (category: string): Promise<IProduct[]> => {
 		try {
-			console.log(category)
 			const db = getFirestore(); // Initialize Firestore
 			const productsRef = collection(db, "products"); // Reference to 'products' collection
 			const q = query(productsRef, where("category", "==", category)); // Firestore query

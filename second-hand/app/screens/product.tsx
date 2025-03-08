@@ -10,35 +10,41 @@ import globalStyles from "@/assets/css/globalStyles";
 import BackButton from "@/components/buttons/BackButton";
 import ContactFooter from "@/components/global/ContactFooter";
 import { IProduct, IRegister } from "../interfaces/types";
-import { useNavigation } from "expo-router";
-import { getDatabase, ref, get } from "firebase/database";
+import { useNavigation, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "../services/context/AuthContext";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
-export default function Product({ product }: { product: IProduct }) {
+export default function Product() {
+	const { product: productString } = useLocalSearchParams();
+	const product: IProduct = productString ? JSON.parse(productString as string) : {};
 	const [seller, setSeller] = useState<IRegister>();
 
 	const fetchUserData = async (userId: string) => {
-		const db = getDatabase();
-		const userRef = ref(db, `users/${userId}`);
+		try {
+			const db = getFirestore();
+			const userRef = doc(db, "users", userId);
+			const snapshot = await getDoc(userRef);
 
-		// Fetch the user data
-		const snapshot = await get(userRef);
-
-		// If the user data exists, return it. Otherwise, return null or throw an error.
-		if (snapshot.exists()) {
-			return snapshot.val();
-		} else {
-			console.error(`User with ID ${userId} not found.`);
+			// If the user data exists, return it. Otherwise, return null or throw an error.
+			if (snapshot.exists()) {
+				return snapshot.data() as IRegister;
+			} else {
+				console.error(`User with ID ${userId} not found.`);
+				return null;
+			}
+		} catch (error) {
+			console.error("Error fetching uset data:", error)
 			return null;
 		}
+
 	};
 
 	const navigator = useNavigation();
 
 	const goBack = () => {
 		navigator.navigate({
-			name: "index",
+			name: "screens/list-of-products",
 			params: { screen: "screens/list-of-products", id: product.category },
 		} as never);
 	};
