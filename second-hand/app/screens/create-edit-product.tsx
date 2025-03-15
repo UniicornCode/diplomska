@@ -10,7 +10,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { Text, View } from "../../components/Themed";
 import globalStyles from "../../assets/css/globalStyles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SecondaryButton from "../../components/buttons/SecondaryButton";
 import ImageInput from "../../components/inputs/ImageInput";
 import BackButton from "../../components/buttons/BackButton";
@@ -19,7 +19,7 @@ import { IProduct, categories, sizes } from "../interfaces/types";
 import { Picker } from "@react-native-picker/picker";
 import ColorPicker from "react-native-wheel-color-picker";
 import { useAuth } from "../services/context/AuthContext";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, doc, getDoc } from "firebase/firestore";
 import PhotoSourceModal from "@/components/custom/PhotoSourceModal";
 import CameraScreen from "./camera";
 
@@ -42,6 +42,31 @@ export default function CreateEditProduct() {
 	const [isCameraVisible, setIsCameraVisible] = useState(false);
 	const navigator = useNavigation();
 	const { user } = useAuth();
+
+	useEffect(() => {
+		const fetchUserAddress = async () => {
+			if (!user) return;
+
+			try {
+				const db = getFirestore();
+				const userDoc = await getDoc(doc(db, "users", user.uid));
+
+				if (userDoc.exists()) {
+					const userData = userDoc.data();
+					if (userData.address) {
+						setData((prev) => ({
+							...prev,
+							address: userData.address,
+						}));
+					}
+				}
+			} catch (error) {
+				console.error("Error fetching user address:", error);
+			}
+		};
+
+		fetchUserAddress();
+	}, [user]);
 
 	const changeHandler = (name: string, value: string) => {
 		setData((prev) => ({ ...prev, [name]: value }));
@@ -115,6 +140,8 @@ export default function CreateEditProduct() {
 		}
 		try {
 			const db = getFirestore();
+			const userDoc = await getDoc(doc(db, "users", user.uid));
+
 			const newProduct = { ...data, userId: user.uid };
 
 			// Reference the "products" collection and add the new document

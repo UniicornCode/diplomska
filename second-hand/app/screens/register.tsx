@@ -45,12 +45,12 @@ export default function RegisterScreen() {
 		setData((prev) => ({ ...prev, [name]: value }));
 	};
 
-	const changeHandlerAddress = (key1: string, value1: string, key2: string, value2: string) => {
+	const changeHandlerAddress = (address: { latitude: string; longitude: string }) => {
 		setData((prev) => ({
 			...prev,
-			selectedAddress: {
-				[key1]: value1,
-				[key2]: value2,
+			address: {
+				...prev.address,
+				...address
 			},
 		}));
 	};
@@ -70,7 +70,7 @@ export default function RegisterScreen() {
 		latitude: string,
 		longitude: string
 	}) => {
-		changeHandlerAddress("latitude", address.latitude, "longitude", address.longitude)
+		changeHandlerAddress({ latitude: address.latitude, longitude: address.longitude })
 		alert("Успешно ја ажуриравте вашата локација");
 	}
 
