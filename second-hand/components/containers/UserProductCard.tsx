@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import globalStyles from "../../assets/css/globalStyles";
+import globalStyles from "@assets/css/globalStyles";
 import { useNavigation } from "expo-router";
 import { get, getDatabase, ref } from "firebase/database";
-import { IProduct } from "../../app/interfaces/types";
+import { IProduct } from "@interfaces/types";
 import { useIsFocused } from "@react-navigation/native";
-import { useAuth } from "@/app/services/context/AuthContext";
+import { useAuth } from "@services/context/AuthContext";
 
 interface IProps {
 	productId: string;

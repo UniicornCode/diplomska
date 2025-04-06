@@ -1,15 +1,14 @@
 import { Button, StyleSheet, TouchableOpacity } from "react-native";
 
-import EditScreenInfo from "../../components/EditScreenInfo";
-import { Text, View } from "../../components/Themed";
-import { IRegister } from "../interfaces/types";
+import { Text, View } from "@components/Themed";
+import { IRegister } from "@interfaces/types";
 import { useRoute } from "@react-navigation/native";
-import Seller from "../screens/seller";
-import { useAuth } from "../services/context/AuthContext";
+import Seller from "@screens/seller";
+import { useAuth } from "@services/context/AuthContext";
 import { useNavigation } from "expo-router";
-import globalStyles from "../../assets/css/globalStyles";
-import UserProfile from "../screens/user-profile";
-import UserListOfProducts from "../screens/user-list-of-products";
+import globalStyles from "@assets/css/globalStyles";
+import UserProfile from "@screens/user-profile";
+import UserListOfProducts from "@screens/user-list-of-products";
 
 interface IType {
 	screen: string;

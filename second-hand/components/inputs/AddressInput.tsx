@@ -1,4 +1,4 @@
-import React, { SetStateAction, useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import {
 	View,
 	TextInput,
@@ -11,8 +11,8 @@ import {
 } from "react-native";
 // @ts-ignore
 import { Icon } from '@rneui/themed';
-import globalStyles from "../../assets/css/globalStyles";
-import MapScreen from "../custom/MapScreen";
+import globalStyles from "@assets/css/globalStyles";
+import MapScreen from "@components/custom/MapScreen";
 
 export default function AddressInput({
 	value,

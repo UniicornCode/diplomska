@@ -1,5 +1,5 @@
 import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import globalStyles from "../../assets/css/globalStyles";
+import globalStyles from "@assets/css/globalStyles";
 import { useNavigation } from "expo-router";
 import { Icon } from '@rneui/themed';
 import React from "react";

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import globalStyles from "../../assets/css/globalStyles";
+import globalStyles from "@assets/css/globalStyles";
 
 export default function PhotoSourceModal({ isVisible, handleChoice }) {
 

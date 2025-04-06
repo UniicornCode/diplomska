@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
-import globalStyles from "../../assets/css/globalStyles";
-import { useNavigation } from "expo-router";
+import globalStyles from "@assets/css/globalStyles";
 
 interface IProps {
 	title: string;

@@ -1,8 +1,8 @@
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "expo-router";
-import globalStyles from "../../assets/css/globalStyles";
-import { IProduct } from "../../app/interfaces/types";
+import globalStyles from "@assets/css/globalStyles";
+import { IProduct } from "@interfaces/types";
 
 export default function SimpleProductCard(product: IProduct) {
 	const navigation = useNavigation();

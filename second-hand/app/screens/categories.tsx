@@ -5,17 +5,15 @@ import {
 	Text,
 	View,
 } from "react-native";
-import globalStyles from "../../assets/css/globalStyles";
-import CategoryButton from "../../components/buttons/CategoryButton";
+import globalStyles from "@assets/css/globalStyles";
+import CategoryButton from "@components/buttons/CategoryButton";
 import { useNavigation } from "expo-router";
-import BackButton from "../../components/buttons/BackButton";
-import { categories } from "../interfaces/types";
+import BackButton from "@components/buttons/BackButton";
+import { categories } from "@interfaces/types";
 import { Dimensions } from "react-native";
-import { useAuth } from "../services/context/AuthContext";
+import { useAuth } from "@services/context/AuthContext";
+import Navbar from "@/components/global/Navbar";
 
-interface IType {
-	screen: string;
-}
 export default function Categories() {
 	const navigator = useNavigation();
 	const { user } = useAuth();
@@ -28,13 +26,16 @@ export default function Categories() {
 	};
 
 	const windowHeight = Dimensions.get("window").height;
-	const desiredHeight = user ? windowHeight * 0.6 : windowHeight * 0.7;
+	const desiredHeight = user ? windowHeight * 0.6 : windowHeight * 0.55;
 
 	return (
 		<View style={globalStyles.background_transparent}>
 			<ImageBackground source={require("../../assets/images/background.png")} style={globalStyles.background}>
 				{!user && (
-					<BackButton title={"Назад"} source={require("../../assets/images/back-icon.png")} />
+					<>
+						<Navbar />
+						<BackButton title={"Назад"} source={require("../../assets/images/back-icon.png")} />
+					</>
 				)}
 				<View style={[globalStyles.container, globalStyles.shadow]}>
 					<Text style={globalStyles.title}>Категории</Text>

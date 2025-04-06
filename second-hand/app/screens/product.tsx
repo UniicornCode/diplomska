@@ -9,11 +9,12 @@ import {
 import globalStyles from "@/assets/css/globalStyles";
 import BackButton from "@/components/buttons/BackButton";
 import ContactFooter from "@/components/global/ContactFooter";
-import { IProduct, IRegister } from "../interfaces/types";
+import { IProduct, IRegister } from "@interfaces/types";
 import { useNavigation, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { useAuth } from "../services/context/AuthContext";
+import { useAuth } from "@services/context/AuthContext";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
+import Navbar from "@/components/global/Navbar";
 
 export default function Product() {
 	const { product: productString } = useLocalSearchParams();
@@ -68,6 +69,7 @@ export default function Product() {
 		<View style={globalStyles.background_transparent}>
 			{/*TODO if there is a user logged in, get the userId*/}
 			<ImageBackground source={require("../../assets/images/background.png")} style={globalStyles.background}>
+				<Navbar />
 				<ScrollView>
 					<BackButton title={"Назад"} source={require("../../assets/images/back-icon.png")} goBack={goBack} />
 					<View style={[globalStyles.container, globalStyles.shadow]}>

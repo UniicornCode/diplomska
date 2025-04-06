@@ -8,20 +8,20 @@ import {
 } from "react-native";
 
 import * as ImagePicker from "expo-image-picker";
-import { Text, View } from "../../components/Themed";
-import globalStyles from "../../assets/css/globalStyles";
+import { Text, View } from "@components/Themed";
+import globalStyles from "@assets/css/globalStyles";
 import { useEffect, useState } from "react";
-import SecondaryButton from "../../components/buttons/SecondaryButton";
-import ImageInput from "../../components/inputs/ImageInput";
-import BackButton from "../../components/buttons/BackButton";
+import SecondaryButton from "@components/buttons/SecondaryButton";
+import ImageInput from "@components/inputs/ImageInput";
+import BackButton from "@components/buttons/BackButton";
 import { useNavigation } from "expo-router";
-import { IProduct, categories, sizes } from "../interfaces/types";
+import { IProduct, categories, sizes } from "@interfaces/types";
 import { Picker } from "@react-native-picker/picker";
 import ColorPicker from "react-native-wheel-color-picker";
-import { useAuth } from "../services/context/AuthContext";
+import { useAuth } from "@services/context/AuthContext";
 import { getFirestore, collection, addDoc, doc, getDoc } from "firebase/firestore";
 import PhotoSourceModal from "@/components/custom/PhotoSourceModal";
-import CameraScreen from "./camera";
+import CameraScreen from "@screens/camera";
 
 const initialState = {
 	category: "Блузи",
@@ -117,18 +117,22 @@ export default function CreateEditProduct() {
 			alert("Ве молиме изберете слика!");
 			return;
 		}
+
 		if (!data.category) {
 			alert("Ве молиме внесете категорија!");
 			return;
 		}
+
 		if (!data.color) {
 			alert("Ве молиме внесете боја!");
 			return;
 		}
+
 		if (!data.price) {
 			alert("Ве молиме внесете цена!");
 			return;
 		}
+
 		if (!data.size) {
 			alert("Ве молиме внесете големина!");
 			return;
@@ -138,6 +142,7 @@ export default function CreateEditProduct() {
 			alert("User not logged in");
 			return;
 		}
+
 		try {
 			const db = getFirestore();
 			const userDoc = await getDoc(doc(db, "users", user.uid));

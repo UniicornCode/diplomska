@@ -9,18 +9,19 @@ import {
 } from "react-native";
 
 import * as ImagePicker from "expo-image-picker";
-import { Text, View } from "../../components/Themed";
-import globalStyles from "../../assets/css/globalStyles";
-import { SetStateAction, useState } from "react";
-import SecondaryButton from "../../components/buttons/SecondaryButton";
-import ImageInput from "../../components/inputs/ImageInput";
-import AddressInput from "../../components/inputs/AddressInput";
-import BackButton from "../../components/buttons/BackButton";
+import { Text, View } from "@components/Themed";
+import globalStyles from "@assets/css/globalStyles";
+import { useState } from "react";
+import SecondaryButton from "@components/buttons/SecondaryButton";
+import ImageInput from "@components/inputs/ImageInput";
+import AddressInput from "@components/inputs/AddressInput";
+import BackButton from "@components/buttons/BackButton";
 import { useNavigation } from "expo-router";
-import { IRegister } from "../interfaces/types";
-import { useAuth } from "../services/context/AuthContext";
-import CameraScreen from "./camera";
+import { IRegister } from "@interfaces/types";
+import { useAuth } from "@services/context/AuthContext";
+import CameraScreen from "@screens/camera";
 import PhotoSourceModal from "@/components/custom/PhotoSourceModal";
+import { Dimensions } from "react-native";
 
 const initialState = {
 	selectedImage: "",
@@ -147,12 +148,15 @@ export default function RegisterScreen() {
 		}
 	};
 
+	const windowHeight = Dimensions.get("window").height;
+	const desiredHeight = windowHeight * 0.02;
+
 	return (
 		<KeyboardAvoidingView
 			style={globalStyles.background_transparent}
 			behavior={Platform.OS === "ios" ? "padding" : "height"}>
 			<ImageBackground source={require("../../assets/images/background.png")} style={globalStyles.background}>
-				<ScrollView contentContainerStyle={globalStyles.scroll_view}>
+				<ScrollView style={{ marginTop: desiredHeight }} showsVerticalScrollIndicator={true}>
 					<BackButton title={"Назад"} source={require("../../assets/images/back-icon.png")} />
 					<PhotoSourceModal isVisible={isModalVisible} handleChoice={handleModalSelection} />
 					<View style={globalStyles.container}>
@@ -210,7 +214,7 @@ export default function RegisterScreen() {
 						<Modal
 							visible={isCameraVisible}
 							onRequestClose={() => setIsCameraVisible(false)}>
-							<CameraScreen style={{ height: '100%', width: '100%' }} onCapture={handleCapture} closeCamera={() => setIsCameraVisible(false)} />
+							<CameraScreen style={styles.camera_style} onCapture={handleCapture} closeCamera={() => setIsCameraVisible(false)} />
 						</Modal>
 					</View>
 				</ScrollView>
@@ -220,4 +224,8 @@ export default function RegisterScreen() {
 }
 
 const styles = StyleSheet.create({
+	camera_style: {
+		height: '100%',
+		width: '100%'
+	}
 });

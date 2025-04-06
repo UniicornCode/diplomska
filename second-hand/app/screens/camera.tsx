@@ -1,10 +1,10 @@
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import React, { useState, useRef } from 'react';
 import { Button, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import ShowPhotoPreview from "../../components/custom/ShowPhotoPreview";
+import ShowPhotoPreview from "@components/custom/ShowPhotoPreview";
 import { Icon } from '@rneui/themed';
 import * as ImageManipulator from 'expo-image-manipulator';
-import globalStyles from "../../assets/css/globalStyles";
+import globalStyles from "@assets/css/globalStyles";
 
 export default function CameraScreen({ onCapture, closeCamera }: any) {
 	const [facing, setFacing] = useState<CameraType>('back');
@@ -23,7 +23,7 @@ export default function CameraScreen({ onCapture, closeCamera }: any) {
 		// Camera permissions are not granted yet
 		return (
 			<View style={globalStyles.background_transparent}>
-				<ImageBackground source={require("../../assets/images/background.png")} style={globalStyles.background}>
+				<ImageBackground source={require("@assets/images/background.png")} style={globalStyles.background}>
 					<View style={styles.grand_permission_container}>
 						<Text style={styles.text}>We need your permission to show the camera</Text>
 						<Button onPress={requestPermission} title="Grant Permission" />

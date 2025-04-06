@@ -8,14 +8,14 @@ import {
 	TextInput,
 } from "react-native";
 
-import { Text, View } from "../../components/Themed";
-import globalStyles from "../../assets/css/globalStyles";
+import { Text, View } from "@components/Themed";
+import globalStyles from "@assets/css/globalStyles";
 import { useState } from "react";
-import SecondaryButton from "../../components/buttons/SecondaryButton";
+import SecondaryButton from "@components/buttons/SecondaryButton";
 import { useNavigation } from "expo-router";
-import BackButton from "../../components/buttons/BackButton";
-import { ILogin } from "../interfaces/types";
-import { useAuth } from "../services/context/AuthContext";
+import BackButton from "@components/buttons/BackButton";
+import { ILogin } from "@interfaces/types";
+import { useAuth } from "@services/context/AuthContext";
 
 const initialState = { email: "", password: "" };
 

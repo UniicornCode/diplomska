@@ -1,13 +1,12 @@
 import { ImageBackground, StyleSheet } from 'react-native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
-import { IProduct } from '../interfaces/types';
+import { IProduct } from '@interfaces/types';
 import { useRoute } from '@react-navigation/native';
 import PrimaryButton from '@/components/buttons/PrimaryButton';
 import globalStyles from '@/assets/css/globalStyles';
-import { useAuth } from '../services/context/AuthContext';
-import Categories from '../screens/categories';
+import { useAuth } from '@services/context/AuthContext';
+import Categories from '@screens/categories';
 
 interface IType {
 	screen: string;

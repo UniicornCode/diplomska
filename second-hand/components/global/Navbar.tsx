@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, StatusBar, SafeAreaView } from "react-native";
-import { View } from "../Themed";
-import globalStyles from "../../assets/css/globalStyles";
+import { View } from "@components/Themed";
+import globalStyles from "@assets/css/globalStyles";
 import { useNavigation } from "expo-router";
-import { useAuth } from "../../app/services/context/AuthContext";
+import { useAuth } from "@services/context/AuthContext";
 
 export default function Navbar() {
 	const navigation = useNavigation();
@@ -17,13 +17,13 @@ export default function Navbar() {
 	return (
 		<SafeAreaView style={[styles.container, globalStyles.background_blue]}>
 			<View style={[styles.navContainer, globalStyles.background_blue]}>
-				<Image source={require("../../assets/images/logo_white.png")} style={styles.image} />
+				<Image source={require("@assets/images/logo_white.png")} style={globalStyles.logo_style} />
 				{/*TODO When user is logged in, the user image should lead to his profile, when not, to login page*/}
 				{user && (
 					<TouchableOpacity onPress={handleOpenProfile}>
 						<Image
 							source={
-								userData?.selectedImage ? { uri: userData.selectedImage } : require("../../assets/images/user_photo.png")
+								userData?.selectedImage ? { uri: userData.selectedImage } : require("@assets/images/user_photo.png")
 							}
 							style={styles.logo}
 						/>
@@ -46,11 +46,6 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 10,
 		height: 60,
 		paddingTop: StatusBar.currentHeight,
-	},
-	image: {
-		width: 235,
-		height: 50,
-		marginVertical: 10,
 	},
 	logo: {
 		height: 24,

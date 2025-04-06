@@ -1,13 +1,13 @@
 import { Image, ImageBackground, ScrollView, StyleSheet, Text, View } from "react-native";
-import globalStyles from "../../assets/css/globalStyles";
-import Navbar from "../../components/global/Navbar";
-import BackButton from "../../components/buttons/BackButton";
-import RatingFooter from "../../components/global/RatingFooter";
-import StarRating from "../../components/custom/StarRating";
-import SecondaryButton from "../../components/buttons/SecondaryButton";
-import { useFocusEffect, useNavigation } from "expo-router";
-import { IRegister } from "../interfaces/types";
-import { useAuth } from "../services/context/AuthContext";
+import globalStyles from "@assets/css/globalStyles";
+import Navbar from "@components/global/Navbar";
+import BackButton from "@components/buttons/BackButton";
+import RatingFooter from "@components/global/RatingFooter";
+import StarRating from "@components/custom/StarRating";
+import SecondaryButton from "@components/buttons/SecondaryButton";
+import { useNavigation } from "expo-router";
+import { IRegister } from "@interfaces/types";
+import { useAuth } from "@services/context/AuthContext";
 import { useRoute } from "@react-navigation/native";
 
 interface IType {

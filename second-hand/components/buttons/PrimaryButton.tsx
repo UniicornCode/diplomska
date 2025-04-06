@@ -1,6 +1,6 @@
 import React from "react";
-import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
-import globalStyles from "../../assets/css/globalStyles";
+import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import globalStyles from "@assets/css/globalStyles";
 import { useNavigation } from "expo-router";
 
 interface IProps {

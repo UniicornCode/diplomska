@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import globalStyles from "../../assets/css/globalStyles";
+import globalStyles from "@assets/css/globalStyles";
 import { useNavigation } from "expo-router";
-import { IRegister } from "../../app/interfaces/types";
+import { IRegister } from "@interfaces/types";
 
 export default function ContactFooter(user: IRegister) {
 	const navigation = useNavigation();

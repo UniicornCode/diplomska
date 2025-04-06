@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
-import globalStyles from "../../assets/css/globalStyles";
+import globalStyles from "@assets/css/globalStyles";
 // @ts-ignore
 import { Icon } from '@rneui/themed';
 import Colors from "@/constants/Colors";

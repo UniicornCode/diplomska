@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
-import globalStyles from "../../assets/css/globalStyles";
-import StarRating from "../custom/StarRating";
+import globalStyles from "@assets/css/globalStyles";
+import StarRating from "@components/custom/StarRating";
 
 export default function RatingCard() {
 	return (

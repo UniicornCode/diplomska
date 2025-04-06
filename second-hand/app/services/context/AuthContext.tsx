@@ -7,10 +7,10 @@ import {
 	signOut as signOutOfFirebase,
 	User,
 } from "firebase/auth";
-import { ILogin, IRegister } from "../../interfaces/types";
-import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ILogin, IRegister } from "@interfaces/types";
+import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, setDoc, onSnapshot } from "firebase/firestore";
-import { app, auth, db, storage } from "../../firebase";
+import { auth, db, storage } from "@app/firebase";
 import * as FileSystem from "expo-file-system";
 
 interface AuthContextType {
