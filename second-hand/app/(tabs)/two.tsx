@@ -3,20 +3,24 @@ import { StyleSheet } from "react-native";
 import { Text, View } from "@components/Themed";
 import CreateEditProduct from "@screens/create-edit-product";
 import { useAuth } from "@services/context/AuthContext";
-import { useFocusEffect, useNavigation } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 
 export default function TabTwoScreen() {
-	const navigator = useNavigation();
+	const router = useRouter();
 	const { user } = useAuth();
 
 	useFocusEffect(() => {
 		if (!user) {
-			navigator.navigate("screens/login" as never);
+			router.replace({
+				pathname: "/screens/login"
+			})
 		}
 	});
+
 	if (!user) {
 		return <></>;
 	}
+
 	return (
 		<View style={styles.container}>
 			<CreateEditProduct />

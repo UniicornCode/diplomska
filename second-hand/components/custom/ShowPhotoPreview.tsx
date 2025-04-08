@@ -5,9 +5,6 @@ import { Icon } from '@rneui/themed';
 import React from "react";
 
 export default function ShowPhotoPreview({ photo, takeNewPhoto, saveImage, closeCamera }: any) {
-
-	const navigator = useNavigation();
-
 	const processPhoto = () => {
 		saveImage(photo.uri)
 		closeCamera()

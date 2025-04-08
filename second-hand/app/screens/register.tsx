@@ -16,12 +16,11 @@ import SecondaryButton from "@components/buttons/SecondaryButton";
 import ImageInput from "@components/inputs/ImageInput";
 import AddressInput from "@components/inputs/AddressInput";
 import BackButton from "@components/buttons/BackButton";
-import { useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
 import { IRegister } from "@interfaces/types";
 import { useAuth } from "@services/context/AuthContext";
 import CameraScreen from "@screens/camera";
 import PhotoSourceModal from "@/components/custom/PhotoSourceModal";
-import { Dimensions } from "react-native";
 
 const initialState = {
 	selectedImage: "",
@@ -41,6 +40,7 @@ export default function RegisterScreen() {
 	const { signUp } = useAuth();
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [isCameraVisible, setIsCameraVisible] = useState(false);
+	const router = useRouter();
 
 	const changeHandler = (name: string, value: string) => {
 		setData((prev) => ({ ...prev, [name]: value }));
@@ -55,8 +55,6 @@ export default function RegisterScreen() {
 			},
 		}));
 	};
-
-	const navigator = useNavigation();
 
 	// Functions to handle input changes
 	const handleImagePress = async () => {
@@ -137,7 +135,9 @@ export default function RegisterScreen() {
 		}
 		try {
 			await signUp(data);
-			navigator.navigate("screens/login" as never); // note: the "as never" type casting seems odd and may not be necessary.
+			router.replace({
+				pathname: "/screens/login"
+			});
 		} catch (error: any) {
 			if (error.code === 'auth/email-already-in-use') {
 				alert("Емаилот веќе се користи. Погледнете дали сте веќе регистрирани.");
@@ -148,19 +148,16 @@ export default function RegisterScreen() {
 		}
 	};
 
-	const windowHeight = Dimensions.get("window").height;
-	const desiredHeight = windowHeight * 0.02;
-
 	return (
 		<KeyboardAvoidingView
 			style={globalStyles.background_transparent}
 			behavior={Platform.OS === "ios" ? "padding" : "height"}>
-			<ImageBackground source={require("../../assets/images/background.png")} style={globalStyles.background}>
-				<ScrollView style={{ marginTop: desiredHeight }} showsVerticalScrollIndicator={true}>
-					<BackButton title={"Назад"} source={require("../../assets/images/back-icon.png")} />
+			<ImageBackground source={require("@assets/images/background.png")} style={globalStyles.background}>
+				<ScrollView showsVerticalScrollIndicator={true}>
+					<BackButton title={"Назад"} />
 					<PhotoSourceModal isVisible={isModalVisible} handleChoice={handleModalSelection} />
 					<View style={globalStyles.container}>
-						<Image source={require("../../assets/images/simple-logo.png")} style={globalStyles.simple_logo} />
+						<Image source={require("@assets/images/simple-logo.png")} style={globalStyles.simple_logo} />
 						<Text style={globalStyles.title}>Регистрирај се</Text>
 
 						<ImageInput onPress={handleImagePress} imageUri={data.selectedImage} />

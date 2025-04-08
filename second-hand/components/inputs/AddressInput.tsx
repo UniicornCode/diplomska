@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
 	View,
-	TextInput,
 	TouchableOpacity,
 	StyleSheet,
 	Text,

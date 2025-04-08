@@ -2,16 +2,17 @@ import React, { useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, StatusBar, SafeAreaView } from "react-native";
 import { View } from "@components/Themed";
 import globalStyles from "@assets/css/globalStyles";
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import { useAuth } from "@services/context/AuthContext";
 
 export default function Navbar() {
-	const navigation = useNavigation();
+	const router = useRouter();
 	const { user, userData } = useAuth();
+
 	const handleOpenProfile = () => {
-		//TODO take information about user and navigate to profile page
-		// setUserId(user?.uid);
-		navigation.navigate("screens/user-profile" as never);
+		router.push({
+			pathname: "/screens/user-profile"
+		})
 	};
 
 	return (

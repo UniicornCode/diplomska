@@ -50,3 +50,17 @@ export const categories = [
 ];
 
 export const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
+
+export type ValidRoutes =
+	| "/"
+	| "/(tabs)"
+	| "/screens/categories"
+	| "/screens/camera"
+	| "/screens/create-edit-product"
+	| "/screens/list-of-products"
+	| "/screens/login"
+	| "/screens/product/[id]"
+	| "/screens/register"
+	| "/screens/seller"
+	| "/screens/user-list-of-products"
+	| "/screens/user-profile";

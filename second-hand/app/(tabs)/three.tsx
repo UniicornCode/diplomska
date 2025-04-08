@@ -5,7 +5,7 @@ import { IRegister } from "@interfaces/types";
 import { useRoute } from "@react-navigation/native";
 import Seller from "@screens/seller";
 import { useAuth } from "@services/context/AuthContext";
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import globalStyles from "@assets/css/globalStyles";
 import UserProfile from "@screens/user-profile";
 import UserListOfProducts from "@screens/user-list-of-products";
@@ -15,16 +15,21 @@ interface IType {
 	id?: string;
 	user?: IRegister;
 }
+
 export default function TabThreeScreen() {
 	const route = useRoute();
 	const params = route.params ? (route.params as IType) : null;
-	const navigator = useNavigation();
+	const router = useRouter();
 	const { userData } = useAuth();
 
+	const handleButton = () => {
+		router.push({
+			pathname: "/screens/login"
+		})
+	}
 
-
-	if (params?.screen === "screens/user-list-of-products" && params?.user) {
-		return <UserListOfProducts {...params.user} />;
+	if (params?.screen === "/screens/user-list-of-products" && params?.user) {
+		return <UserListOfProducts />;
 	}
 
 	if (!userData) {
@@ -33,15 +38,13 @@ export default function TabThreeScreen() {
 				<Text>Немате пристап до оваа страна</Text>
 				<TouchableOpacity
 					style={[globalStyles.primary_button, globalStyles.shadow]}
-					onPress={() => {
-						navigator.navigate("screens/login" as never);
-					}}>
+					onPress={handleButton}>
 					<Text style={styles.buttonText}>Најави се</Text>
 				</TouchableOpacity>
 			</View>
 		);
 	}
-	return userData ? <UserListOfProducts {...(userData as IRegister)} /> : <></>;
+	return userData ? <UserListOfProducts /> : <></>;
 }
 
 const styles = StyleSheet.create({

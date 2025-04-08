@@ -12,7 +12,7 @@ import { Text, View } from "@components/Themed";
 import globalStyles from "@assets/css/globalStyles";
 import { useState } from "react";
 import SecondaryButton from "@components/buttons/SecondaryButton";
-import { useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
 import BackButton from "@components/buttons/BackButton";
 import { ILogin } from "@interfaces/types";
 import { useAuth } from "@services/context/AuthContext";
@@ -22,7 +22,7 @@ const initialState = { email: "", password: "" };
 export default function LoginScreen() {
 	const [data, setData] = useState<ILogin>({ ...initialState });
 	const { signIn } = useAuth();
-	const navigation = useNavigation();
+	const router = useRouter();
 
 	// Function to handle input changes
 	const changeHandler = (name: string, value: string) => {
@@ -33,7 +33,7 @@ export default function LoginScreen() {
 	const handleLogin = async () => {
 		try {
 			await signIn(data);
-			navigation.navigate("(tabs)" as never)
+			router.replace("/(tabs)")
 		} catch (error: any) {
 			// Check if the error is an instance of AuthError
 			if (error.code === "auth/wrong-password" || error.code === "auth/user-not-found") {
@@ -44,22 +44,15 @@ export default function LoginScreen() {
 		}
 	};
 
-	const handleBack = () => {
-		navigation.reset({
-			index: 0, // The index of the active screen (in this case, the tabs screen)
-			routes: [{ name: "(tabs)" }], // Reset to the tabs screen
-		});
-	};
-
 	return (
 		<KeyboardAvoidingView
 			style={globalStyles.background_transparent}
 			behavior={Platform.OS === "ios" ? "padding" : "height"}>
-			<ImageBackground source={require("../../assets/images/background.png")} style={globalStyles.background}>
+			<ImageBackground source={require("@assets/images/background.png")} style={globalStyles.background}>
 				<ScrollView contentContainerStyle={globalStyles.scroll_view}>
-					<BackButton title={"Назад"} source={require("../../assets/images/back-icon.png")} goBack={handleBack} />
+					<BackButton title={"Назад"} screen={"/(tabs)"} />
 					<View style={globalStyles.container}>
-						<Image source={require("../../assets/images/simple-logo.png")} style={globalStyles.simple_logo} />
+						<Image source={require("@assets/images/simple-logo.png")} style={globalStyles.simple_logo} />
 						<Text style={globalStyles.title}>Најави се</Text>
 
 						<TextInput

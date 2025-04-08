@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import SecondaryButton from "@components/buttons/SecondaryButton";
 import ImageInput from "@components/inputs/ImageInput";
 import BackButton from "@components/buttons/BackButton";
-import { useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
 import { IProduct, categories, sizes } from "@interfaces/types";
 import { Picker } from "@react-native-picker/picker";
 import ColorPicker from "react-native-wheel-color-picker";
@@ -40,7 +40,7 @@ export default function CreateEditProduct() {
 	const [data, setData] = useState<IProduct>({ ...initialState });
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [isCameraVisible, setIsCameraVisible] = useState(false);
-	const navigator = useNavigation();
+	const router = useRouter();
 	const { user } = useAuth();
 
 	useEffect(() => {
@@ -153,7 +153,11 @@ export default function CreateEditProduct() {
 			await addDoc(collection(db, "products"), newProduct);
 
 			alert("Успешно додадовте производ");
-			navigator.navigate("screens/list-of-products" as never);
+
+			router.replace({
+				pathname: "/screens/list-of-products",
+				params: { category: newProduct.category }
+			})
 		} catch (error: any) {
 			alert(error.message);
 		}
@@ -163,9 +167,9 @@ export default function CreateEditProduct() {
 		<KeyboardAvoidingView
 			style={[globalStyles.background_transparent, styles.width]}
 			behavior={Platform.OS === "ios" ? "padding" : "height"}>
-			<ImageBackground source={require("../../assets/images/background.png")} style={globalStyles.background}>
+			<ImageBackground source={require("@assets/images/background.png")} style={globalStyles.background}>
 				<ScrollView contentContainerStyle={globalStyles.scroll_view}>
-					<BackButton title={"Назад"} source={require("../../assets/images/back-icon.png")} />
+					<BackButton title={"Назад"} />
 					<PhotoSourceModal isVisible={isModalVisible} handleChoice={handleModalSelection} />
 					<View style={globalStyles.container}>
 						<Text style={globalStyles.title}>Додади производ</Text>

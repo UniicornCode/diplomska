@@ -3,55 +3,58 @@ import globalStyles from "@assets/css/globalStyles";
 import BackButton from "@components/buttons/BackButton";
 import UserProductCard from "@components/containers/UserProductCard";
 import React, { useState } from "react";
-import { equalTo, get, getDatabase, orderByChild, query, ref } from "firebase/database";
+import { getFirestore, collection, query, where, getDocs, doc } from "firebase/firestore";
 import { IProduct, IRegister } from "@interfaces/types";
 import { useAuth } from "@services/context/AuthContext";
 
 // @ts-ignore
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import Colors from "@/constants/Colors";
 
-export default function UserListOfProducts(userData: IRegister | undefined) {
-	const user = useAuth();
+export default function UserListOfProducts() {
+	const { user } = useAuth();
 	const [products, setProducts] = useState<IProduct[]>([]);
 	const [loading, setLoading] = useState(true); // Initialize loading state
-	const db = getDatabase();
+
+	const db = getFirestore();
 
 	useFocusEffect(() => {
-		if (user.user) {
-			const userId = user.user.uid;
-			const productsRef = ref(db, "products");
-			const q = query(productsRef, orderByChild("userId"), equalTo(userId));
+		let isActive = true;
 
-			// Use try-catch for error handling
-			try {
-				get(q)
-					.then((snapshot) => {
-						if (snapshot.exists()) {
-							const productList: IProduct[] = [];
-							snapshot.forEach((childSnapshot) => {
-								const productId = childSnapshot.key;
-								const productData = childSnapshot.val() as IProduct;
-								if (productId) {
-									productList.push({ ...productData, id: productId });
-								}
-							});
-							setProducts(productList);
-						} else {
-							// No products found for the current user.
-							setProducts([]);
-						}
+		const fetchUserProducts = async () => {
+			if (user) {
+				const userId = user.uid;
+				const productsRef = collection(db, "products");
+				const q = query(productsRef, where("userId", "==", userId));
+
+				try {
+					const snapshot = await getDocs(q);
+					const productList: IProduct[] = [];
+
+					snapshot.forEach((doc) => {
+						const productData = doc.data() as IProduct;
+						productList.push({ ...productData, id: doc.id })
 					})
-					.catch((error) => {
-						console.error("Error fetching products:", error);
-					})
-					.finally(() => {
-						setLoading(false); // Set loading to false when done
-					});
-			} catch (error) {
-				console.error("Error fetching products:", error);
-				setLoading(false); // Set loading to false in case of an error
+
+					if (isActive) {
+						setProducts(productList);
+					}
+				} catch (error) {
+					console.error("Error fetching products:", error);
+				} finally {
+					if (isActive) {
+						setLoading(false);
+					}
+				}
 			}
 		}
+
+		fetchUserProducts();
+
+		// Clean up on blur/unmount
+		return () => {
+			isActive = false;
+		};
 	});
 
 	return (
@@ -64,17 +67,14 @@ export default function UserListOfProducts(userData: IRegister | undefined) {
 					<Text style={[globalStyles.wide_title, styles.custom_width]}>
 						МОИ ПРОДУКТИ
 					</Text>
-					<BackButton
-						title={"Назад"}
-						source={require("../../assets/images/back-icon.png")}
-					/>
+					<BackButton title={"Назад"} />
 					<View style={globalStyles.container}>
 						{loading ? (
 							// Show a loading indicator while products are being fetched
-							<ActivityIndicator size="large" color="#0000ff" />
+							<ActivityIndicator size="large" color={Colors.primaryColor} />
 						) : products.length ? (
 							products.map((product) => (
-								<UserProductCard key={product.id} productId={product.id} {...product} />
+								<UserProductCard key={product.id} {...product} />
 							))
 						) : (
 							<View

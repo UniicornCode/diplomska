@@ -19,15 +19,15 @@ export default function IndexScreen() {
 	const params = route.params as IType;
 
 	const { user } = useAuth();
-	if (user || params?.screen === "screens/categories") {
+	if (user || params?.screen === "/screens/categories") {
 		return <Categories />;
 	}
 	return (
-		<ImageBackground source={require("../../assets/images/background.png")} style={globalStyles.background}>
+		<ImageBackground source={require("@assets/images/background.png")} style={globalStyles.background}>
 			<View style={styles.container}>
-				<PrimaryButton title={"Најави се"} name={"screens/login"} />
-				<PrimaryButton title={"Регистрирај се"} name={"screens/register"} />
-				<PrimaryButton title={"Разгледај"} name={"screens/categories"} />
+				<PrimaryButton title={"Најави се"} screen={"/screens/login"} />
+				<PrimaryButton title={"Регистрирај се"} screen={"/screens/register"} />
+				<PrimaryButton title={"Разгледај"} screen={"/screens/categories"} />
 				<View style={[styles.welcome_info, globalStyles.shadow]}>
 					<Text style={[styles.welcome, globalStyles.text_white]}>Добредојде!</Text>
 					<Text style={[styles.welcome, globalStyles.text_white]}>

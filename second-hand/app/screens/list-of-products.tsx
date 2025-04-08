@@ -6,7 +6,6 @@ import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { IProduct } from "@interfaces/types";
 import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
-import Navbar from "@/components/global/Navbar";
 
 
 export default function ListOfProducts() {
@@ -54,10 +53,9 @@ export default function ListOfProducts() {
 
 	return (
 		<View style={[globalStyles.background_transparent]}>
-			<ImageBackground source={require("../../assets/images/background.png")} style={globalStyles.background}>
-				<Navbar />
+			<ImageBackground source={require("@assets/images/background.png")} style={globalStyles.background}>
 				<ScrollView>
-					<BackButton title={"Назад"} source={require("../../assets/images/back-icon.png")} />
+					<BackButton title={"Назад"} />
 					<View style={styles.center}>
 						<Text style={styles.text}>{category}</Text>
 					</View>

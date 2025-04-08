@@ -10,11 +10,10 @@ import globalStyles from "@/assets/css/globalStyles";
 import BackButton from "@/components/buttons/BackButton";
 import ContactFooter from "@/components/global/ContactFooter";
 import { IProduct, IRegister } from "@interfaces/types";
-import { useNavigation, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "@services/context/AuthContext";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
-import Navbar from "@/components/global/Navbar";
 
 export default function Product() {
 	const { product: productString } = useLocalSearchParams();
@@ -41,15 +40,6 @@ export default function Product() {
 
 	};
 
-	const navigator = useNavigation();
-
-	const goBack = () => {
-		navigator.navigate({
-			name: "screens/list-of-products",
-			params: { screen: "screens/list-of-products", id: product.category },
-		} as never);
-	};
-
 	useEffect(() => {
 		const effect = async () => {
 			if (product.userId) {
@@ -62,16 +52,14 @@ export default function Product() {
 		effect();
 	}, [product]);
 
-
 	const { user } = useAuth();
 
 	return (
 		<View style={globalStyles.background_transparent}>
 			{/*TODO if there is a user logged in, get the userId*/}
-			<ImageBackground source={require("../../assets/images/background.png")} style={globalStyles.background}>
-				<Navbar />
+			<ImageBackground source={require("@assets/images/background.png")} style={globalStyles.background}>
 				<ScrollView>
-					<BackButton title={"Назад"} source={require("../../assets/images/back-icon.png")} goBack={goBack} />
+					<BackButton title={"Назад"} />
 					<View style={[globalStyles.container, globalStyles.shadow]}>
 						<View style={globalStyles.white_container}>
 							<Image source={{ uri: product.image }} style={globalStyles.cloth_image} />
@@ -96,7 +84,6 @@ export default function Product() {
 					</View>
 				</ScrollView>
 			</ImageBackground>
-			{/*TODO The footer should be visible only if a user is logged in*/}
 			{user && seller && <ContactFooter {...seller} />}
 		</View>
 	);

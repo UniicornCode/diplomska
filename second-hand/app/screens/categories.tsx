@@ -7,22 +7,21 @@ import {
 } from "react-native";
 import globalStyles from "@assets/css/globalStyles";
 import CategoryButton from "@components/buttons/CategoryButton";
-import { useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
 import BackButton from "@components/buttons/BackButton";
 import { categories } from "@interfaces/types";
 import { Dimensions } from "react-native";
 import { useAuth } from "@services/context/AuthContext";
-import Navbar from "@/components/global/Navbar";
 
 export default function Categories() {
-	const navigator = useNavigation();
+	const router = useRouter();
 	const { user } = useAuth();
 
 	const handleNavigation = (category: string) => {
-		navigator.navigate({
-			name: "screens/list-of-products",
-			params: { category },
-		} as never);
+		router.push({
+			pathname: "/screens/list-of-products",
+			params: { category }
+		})
 	};
 
 	const windowHeight = Dimensions.get("window").height;
@@ -30,16 +29,13 @@ export default function Categories() {
 
 	return (
 		<View style={globalStyles.background_transparent}>
-			<ImageBackground source={require("../../assets/images/background.png")} style={globalStyles.background}>
+			<ImageBackground source={require("@assets/images/background.png")} style={globalStyles.background}>
 				{!user && (
-					<>
-						<Navbar />
-						<BackButton title={"Назад"} source={require("../../assets/images/back-icon.png")} />
-					</>
+					<BackButton title={"Назад"} />
 				)}
 				<View style={[globalStyles.container, globalStyles.shadow]}>
 					<Text style={globalStyles.title}>Категории</Text>
-					<ScrollView horizontal={false} showsVerticalScrollIndicator={true} style={{ height: desiredHeight }}>
+					<ScrollView horizontal={false} showsVerticalScrollIndicator={true} style={!user ? { height: desiredHeight } : null}>
 						{categories.map((category) => (
 							<CategoryButton key={category} title={category} onPress={() => handleNavigation(category)} />
 						))}

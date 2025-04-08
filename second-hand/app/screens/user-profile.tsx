@@ -10,17 +10,16 @@ import {
 	View,
 } from "react-native";
 import globalStyles from "@assets/css/globalStyles";
-import Navbar from "@components/global/Navbar";
 import BackButton from "@components/buttons/BackButton";
 import StarRating from "@components/custom/StarRating";
 import MyProductsButton from "@components/buttons/MyProductsButton";
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import { useAuth } from "@services/context/AuthContext";
 import { getAuth, deleteUser } from "firebase/auth";
 import { getFirestore, doc, deleteDoc } from "firebase/firestore";
 
 export default function UserProfile() {
-	const navigator = useNavigation();
+	const router = useRouter();
 	const { signOut } = useAuth();
 	const { userData } = useAuth();
 	const changeHandler = (name: string, value: string) => { };
@@ -32,7 +31,16 @@ export default function UserProfile() {
 
 	// TODO using the user id, open his list of products
 	const openUserProducts = () => {
-		navigator.navigate("screens/user-list-of-products" as never);
+		router.push({
+			pathname: "/screens/user-list-of-products"
+		});
+	};
+
+	const logOut = () => {
+		signOut();
+		router.push({
+			pathname: "/screens/login"
+		});
 	};
 
 	const deleteUserAccount = async () => {
@@ -50,7 +58,9 @@ export default function UserProfile() {
 			await deleteUser(user);
 
 			// 3. Navigate to login
-			navigator.navigate("screens/login" as never);
+			router.replace({
+				pathname: "/screens/login"
+			})
 		} catch (error: any) {
 			console.error("Error deleting account:", error.message);
 		}
@@ -61,10 +71,9 @@ export default function UserProfile() {
 			style={globalStyles.background_transparent}
 			behavior={Platform.OS === "ios" ? "padding" : "height"}>
 			<ImageBackground source={require("@assets/images/background.png")} style={globalStyles.background}>
-				<Navbar />
 				<ScrollView>
 					<Text style={[globalStyles.wide_title]}>МОЈ ПРОФИЛ</Text>
-					<BackButton title={"Назад"} source={require("@assets/images/back-icon.png")} />
+					<BackButton title={"Назад"} />
 					<View style={globalStyles.container}>
 						<TextInput
 							style={globalStyles.input_field}
@@ -108,10 +117,7 @@ export default function UserProfile() {
 
 					<TouchableOpacity
 						style={[styles.button, globalStyles.shadow, globalStyles.secondary_button]}
-						onPress={() => {
-							signOut();
-							navigator.navigate("screens/login" as never);
-						}}>
+						onPress={logOut}>
 						<Text style={[globalStyles.text_white, styles.textBtn]}>Одјави се</Text>
 					</TouchableOpacity>
 

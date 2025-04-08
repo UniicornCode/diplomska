@@ -24,12 +24,12 @@ export default function TabLayout() {
 				tabBarActiveTintColor: Colors.primaryColor,
 				// Disable the static render of the header on web
 				// to prevent a hydration error in React Navigation v6.
-				headerShown: useClientOnlyValue(false, true),
+				headerShown: false
 			}}>
 			<Tabs.Screen
 				name="index"
 				options={{
-					title: '',
+					title: "",
 					tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
 					//   <Link href="/modal" asChild>
 					//     <Pressable>
@@ -44,23 +44,20 @@ export default function TabLayout() {
 					//     </Pressable>
 					//   </Link>
 					// ),
-					header: () => <Navbar />,
 				}}
 			/>
 			<Tabs.Screen
 				name="two"
 				options={{
 					title: "",
-					tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />,
-					header: () => <Navbar />,
+					tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />
 				}}
 			/>
 			<Tabs.Screen
 				name="three"
 				options={{
 					title: "",
-					tabBarIcon: ({ color }) => <TabBarIcon name="bars" color={color} />,
-					header: () => <Navbar />,
+					tabBarIcon: ({ color }) => <TabBarIcon name="bars" color={color} />
 				}}
 			/>
 		</Tabs>

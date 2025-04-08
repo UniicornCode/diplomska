@@ -1,22 +1,30 @@
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import globalStyles from "@assets/css/globalStyles";
-import { useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
+import { ValidRoutes } from "@interfaces/types";
 
 interface IProps {
 	title: string;
-	source: any;
-	goBack?: () => void;
+	screen?: ValidRoutes;
 }
 
-export default function BackButton({ title, source, goBack }: IProps) {
-	const navigation = useNavigation();
+export default function BackButton({ title, screen }: IProps) {
+	const router = useRouter();
+
+	const handleBack = () => {
+		if (screen) {
+			router.replace({ pathname: screen });
+		} else {
+			router.back(); // fallback to a route if nothing to go back to
+		}
+	};
 
 	return (
 		<TouchableOpacity
 			style={[globalStyles.back_button, globalStyles.shadow]}
-			onPress={goBack ? goBack : () => navigation.goBack()}>
-			<Image source={source} style={styles.backIcon} />
+			onPress={handleBack}>
+			<Image source={require("@assets/images/back-icon.png")} style={styles.backIcon} />
 			<Text style={[globalStyles.text_white, styles.title]}>{title}</Text>
 		</TouchableOpacity>
 	);

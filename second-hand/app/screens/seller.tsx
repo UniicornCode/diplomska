@@ -1,31 +1,32 @@
 import { Image, ImageBackground, ScrollView, StyleSheet, Text, View } from "react-native";
 import globalStyles from "@assets/css/globalStyles";
-import Navbar from "@components/global/Navbar";
 import BackButton from "@components/buttons/BackButton";
 import RatingFooter from "@components/global/RatingFooter";
 import StarRating from "@components/custom/StarRating";
 import SecondaryButton from "@components/buttons/SecondaryButton";
-import { useNavigation } from "expo-router";
-import { IRegister } from "@interfaces/types";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAuth } from "@services/context/AuthContext";
-import { useRoute } from "@react-navigation/native";
+import { IRegister } from "@/interfaces/types";
 
-interface IType {
-	user?: IRegister;
-}
 export default function Seller() {
-	const navigator = useNavigation();
-	const route = useRoute();
-	const { user } = route.params;
+	const router = useRouter();
+	const { seller: sellerString } = useLocalSearchParams();
+	const seller: IRegister = sellerString ? JSON.parse(sellerString as string) : {};
 
 	// TODO navigate to the list of a particular ID of a seller
 	const showListOfRatings = () => {
-		navigator.navigate("screens/list-of-ratings" as never);
+		router.push({
+			pathname: "/(tabs)"
+			// should be screens/list-of-ratings
+		})
 	};
 
 	// TODO open a rating form for a particular seller
 	const openRatingForm = () => {
-		navigator.navigate("screens/leave-rating" as never);
+		router.push({
+			pathname: "/(tabs)"
+			// should be screens/leave-rating
+		})
 	};
 
 	function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
@@ -58,16 +59,15 @@ export default function Seller() {
 
 	return (
 		<View style={globalStyles.background_transparent}>
-			<Navbar />
-			<ImageBackground source={require("../../assets/images/background.png")} style={globalStyles.background}>
+			<ImageBackground source={require("@assets/images/background.png")} style={globalStyles.background}>
 				<ScrollView>
-					<BackButton title={"Назад"} source={require("../../assets/images/back-icon.png")} />
+					<BackButton title={"Назад"} />
 					<View style={[globalStyles.container, globalStyles.shadow]}>
 						<View style={globalStyles.white_container}>
 							<Text style={styles.seller_name}>
-								{user?.name || ""} {user?.surname || ""}
+								{seller?.name || ""} {seller?.surname || ""}
 							</Text>
-							<Image source={{ uri: user?.selectedImage }} style={[globalStyles.background_blue, styles.image_style]} />
+							<Image source={{ uri: seller?.selectedImage }} style={[globalStyles.background_blue, styles.image_style]} />
 							<View style={styles.owner_description}>
 								<View>
 									<Text style={styles.text}>Телефонски број</Text>
@@ -75,11 +75,11 @@ export default function Seller() {
 									<Text style={styles.text}>Оддалеченост</Text>
 								</View>
 								<View>
-									<Text style={styles.text}>{user?.phone}</Text>
-									<Text style={styles.text}>{user?.email}</Text>
+									<Text style={styles.text}>{seller?.phone}</Text>
+									<Text style={styles.text}>{seller?.email}</Text>
 									<Text style={styles.text}>{haversineDistance(
-										+(user?.address?.latitude || 0),
-										+(user?.address?.longitude || 0),
+										+(seller?.address?.latitude || 0),
+										+(seller?.address?.longitude || 0),
 										+(userData?.address?.latitude || 0),
 										+(userData?.address?.longitude || 0)
 									)} km</Text>

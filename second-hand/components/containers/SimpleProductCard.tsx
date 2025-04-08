@@ -1,18 +1,18 @@
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import globalStyles from "@assets/css/globalStyles";
 import { IProduct } from "@interfaces/types";
 
 export default function SimpleProductCard(product: IProduct) {
-	const navigation = useNavigation();
+	const router = useRouter();
 
 	const handleNavigation = () => {
 		if (product.id) {
-			navigation.navigate({
-				name: "screens/product",
-				params: { product: JSON.stringify(product) }, // Stringify the product object
-			} as never);
+			router.push({
+				pathname: "/screens/product/[id]",
+				params: { id: product.id, product: JSON.stringify(product) }
+			})
 		}
 	};
 
