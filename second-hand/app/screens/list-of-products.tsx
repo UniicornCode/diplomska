@@ -2,14 +2,16 @@ import { ActivityIndicator, ImageBackground, ScrollView, StyleSheet, Text, View 
 import SimpleProductCard from "@components/containers/SimpleProductCard";
 import BackButton from "@components/buttons/BackButton";
 import globalStyles from "@assets/css/globalStyles";
-import { useLocalSearchParams } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { IProduct } from "@interfaces/types";
 import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 
 
 export default function ListOfProducts() {
-	const { category } = useLocalSearchParams<{ category: string }>();
+	const { category, navigatedFromCreatedProduct } = useLocalSearchParams<{ category: string, navigatedFromCreatedProduct: string }>();
+	const router = useRouter();
+
 	const [products, setProducts] = useState<IProduct[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -55,7 +57,7 @@ export default function ListOfProducts() {
 		<View style={[globalStyles.background_transparent]}>
 			<ImageBackground source={require("@assets/images/background.png")} style={globalStyles.background}>
 				<ScrollView>
-					<BackButton title={"Назад"} />
+					<BackButton title={"Назад"} screen={navigatedFromCreatedProduct == "true" ? "/(tabs)" : undefined} />
 					<View style={styles.center}>
 						<Text style={styles.text}>{category}</Text>
 					</View>

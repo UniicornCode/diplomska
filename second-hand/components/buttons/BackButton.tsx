@@ -14,7 +14,7 @@ export default function BackButton({ title, screen }: IProps) {
 
 	const handleBack = () => {
 		if (screen) {
-			router.replace({ pathname: screen });
+			router.replace(screen);
 		} else {
 			router.back(); // fallback to a route if nothing to go back to
 		}

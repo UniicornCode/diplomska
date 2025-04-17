@@ -1,70 +1,22 @@
-import { Button, StyleSheet, TouchableOpacity } from "react-native";
-
-import { Text, View } from "@components/Themed";
-import { IRegister } from "@interfaces/types";
-import { useRoute } from "@react-navigation/native";
-import Seller from "@screens/seller";
 import { useAuth } from "@services/context/AuthContext";
-import { useNavigation, useRouter } from "expo-router";
-import globalStyles from "@assets/css/globalStyles";
-import UserProfile from "@screens/user-profile";
+import { useFocusEffect, useRouter } from "expo-router";
 import UserListOfProducts from "@screens/user-list-of-products";
 
-interface IType {
-	screen: string;
-	id?: string;
-	user?: IRegister;
-}
-
 export default function TabThreeScreen() {
-	const route = useRoute();
-	const params = route.params ? (route.params as IType) : null;
 	const router = useRouter();
-	const { userData } = useAuth();
+	const { user } = useAuth();
 
-	const handleButton = () => {
-		router.push({
-			pathname: "/screens/login"
-		})
+	useFocusEffect(() => {
+		if (!user) {
+			router.replace({
+				pathname: "/screens/login"
+			})
+		}
+	});
+
+	if (!user) {
+		return null
 	}
 
-	if (params?.screen === "/screens/user-list-of-products" && params?.user) {
-		return <UserListOfProducts />;
-	}
-
-	if (!userData) {
-		return (
-			<View style={styles.container}>
-				<Text>Немате пристап до оваа страна</Text>
-				<TouchableOpacity
-					style={[globalStyles.primary_button, globalStyles.shadow]}
-					onPress={handleButton}>
-					<Text style={styles.buttonText}>Најави се</Text>
-				</TouchableOpacity>
-			</View>
-		);
-	}
-	return userData ? <UserListOfProducts /> : <></>;
+	return <UserListOfProducts />;
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	title: {
-		fontSize: 20,
-		fontWeight: "bold",
-	},
-	separator: {
-		marginVertical: 30,
-		height: 1,
-		width: "80%",
-	},
-	buttonText: {
-		textAlign: "center",
-		color: "white",
-		fontSize: 20,
-	},
-});

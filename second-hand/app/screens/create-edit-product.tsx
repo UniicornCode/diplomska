@@ -145,8 +145,6 @@ export default function CreateEditProduct() {
 
 		try {
 			const db = getFirestore();
-			const userDoc = await getDoc(doc(db, "users", user.uid));
-
 			const newProduct = { ...data, userId: user.uid };
 
 			// Reference the "products" collection and add the new document
@@ -156,7 +154,10 @@ export default function CreateEditProduct() {
 
 			router.replace({
 				pathname: "/screens/list-of-products",
-				params: { category: newProduct.category }
+				params: {
+					category: newProduct.category,
+					navigatedFromCreatedProduct: "true"
+				}
 			})
 		} catch (error: any) {
 			alert(error.message);
