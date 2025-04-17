@@ -13,15 +13,20 @@ import globalStyles from "@assets/css/globalStyles";
 import BackButton from "@components/buttons/BackButton";
 import StarRating from "@components/custom/StarRating";
 import MyProductsButton from "@components/buttons/MyProductsButton";
-import { useNavigation, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useAuth } from "@services/context/AuthContext";
 import { getAuth, deleteUser } from "firebase/auth";
-import { getFirestore, doc, deleteDoc } from "firebase/firestore";
+import { getFirestore, doc, deleteDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { useState } from "react";
+import DeleteProfileModal from "@/components/custom/DeleteProfileModal";
+import SecondaryButton from "@/components/buttons/SecondaryButton";
+import Colors from "@/constants/Colors";
 
 export default function UserProfile() {
 	const router = useRouter();
 	const { signOut } = useAuth();
 	const { userData } = useAuth();
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const changeHandler = (name: string, value: string) => { };
 
 	// TODO take the list of ratings per user and calculate the average
@@ -38,7 +43,7 @@ export default function UserProfile() {
 
 	const logOut = () => {
 		signOut();
-		router.push({
+		router.replace({
 			pathname: "/screens/login"
 		});
 	};
@@ -51,13 +56,24 @@ export default function UserProfile() {
 
 			if (!user) return;
 
-			// 1. Delete Firestore user document
+			// Query all the products for the user
+			const productsRef = collection(db, "products");
+			const q = query(productsRef, where("userId", "==", user.uid));
+			const querySnapshot = await getDocs(q);
+
+			// Delete products related to the user
+			const deletePromises = querySnapshot.docs.map(productDoc =>
+				deleteDoc(doc(db, "products", productDoc.id))
+			);
+			await Promise.all(deletePromises);
+
+			// Delete user
 			await deleteDoc(doc(db, "users", user.uid));
 
-			// 2. Delete Auth user (this must come after Firestore delete)
+			// Delete Auth user (this must come after Firestore delete)
 			await deleteUser(user);
 
-			// 3. Navigate to login
+			// Navigate to login
 			router.replace({
 				pathname: "/screens/login"
 			})
@@ -115,18 +131,25 @@ export default function UserProfile() {
 						<StarRating rating={calculateRating()} isDisabled={true} />
 					</View>
 
-					<TouchableOpacity
-						style={[styles.button, globalStyles.shadow, globalStyles.secondary_button]}
-						onPress={logOut}>
-						<Text style={[globalStyles.text_white, styles.textBtn]}>Одјави се</Text>
-					</TouchableOpacity>
+					<View style={{ marginBottom: 40 }}>
+						<SecondaryButton
+							title="Одјави се"
+							onPress={logOut}
+						/>
 
-					<TouchableOpacity
-						style={[styles.button, globalStyles.shadow, globalStyles.delete_button]} // red button
-						onPress={deleteUserAccount}>
-						<Text style={[globalStyles.text_white, styles.textBtn]}>Избриши Профил</Text>
-					</TouchableOpacity>
+						<SecondaryButton
+							title="Избриши Профил"
+							onPress={() => setShowDeleteModal(true)}
+							background={Colors.deleteColor}
+						/>
+					</View>
 				</ScrollView>
+				<DeleteProfileModal visible={showDeleteModal}
+					onConfirm={async () => {
+						await deleteUserAccount()
+						setShowDeleteModal(false)
+					}}
+					onCancel={() => setShowDeleteModal(false)} />
 			</ImageBackground>
 		</KeyboardAvoidingView>
 	);

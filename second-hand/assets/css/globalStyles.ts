@@ -39,7 +39,7 @@ const globalStyles = StyleSheet.create({
 		alignContent: 'center',
 		justifyContent: 'center',
 		alignSelf: 'center',
-		marginVertical: 30,
+		marginVertical: 15,
 		backgroundColor: '#7891D3',
 		padding: 8,
 		borderRadius: 20,
@@ -69,18 +69,6 @@ const globalStyles = StyleSheet.create({
 		paddingHorizontal: 10,
 		flexDirection: 'row',
 		alignItems: 'center'
-	},
-	delete_button: {
-		alignContent: 'center',
-		justifyContent: 'center',
-		alignSelf: 'center',
-		marginVertical: 30,
-		backgroundColor: '#D11A2A',
-		padding: 8,
-		borderRadius: 20,
-		borderColor: 'white',
-		borderWidth: 2,
-		width: '70%'
 	},
 	scroll_view: {
 		flexGrow: 1,

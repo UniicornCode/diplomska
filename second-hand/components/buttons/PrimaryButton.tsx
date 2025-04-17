@@ -13,10 +13,7 @@ export default function PrimaryButton({ title, screen }: IProps) {
 	const router = useRouter();
 
 	const handleNavigation = () => {
-		router.push({
-			pathname: screen
-			
-		})
+		router.push(screen)
 	};
 	return (
 		<TouchableOpacity
