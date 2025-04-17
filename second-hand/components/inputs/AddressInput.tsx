@@ -56,7 +56,7 @@ export default function AddressInput({
 			</TouchableOpacity>
 			<Modal visible={showInfo} transparent animationType={"fade"}>
 				<TouchableWithoutFeedback onPress={handleOutsidePress}>
-					<View style={styles.overlay}>
+					<View style={[styles.overlay, styles.modalBackground]}>
 						<View style={styles.infoTooltip}>
 							<Text>{infoMessage}</Text>
 						</View>
@@ -110,4 +110,7 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: "gray",
 	},
+	modalBackground: {
+		backgroundColor: 'rgba(0, 0, 0, 0.5)',
+	}
 });

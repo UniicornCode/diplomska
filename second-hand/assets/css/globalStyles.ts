@@ -179,7 +179,7 @@ const globalStyles = StyleSheet.create({
 		left: 0,
 		right: 0,
 		paddingVertical: 20,
-		paddingHorizontal: 16,
+		paddingHorizontal: 20,
 		paddingBottom: 30,
 	}
 });

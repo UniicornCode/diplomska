@@ -167,6 +167,7 @@ export default function RegisterScreen() {
 							placeholder="Име"
 							value={data.name}
 							onChangeText={changeHandler.bind(null, "name")}
+							autoCapitalize="sentences"
 						/>
 
 						<TextInput
@@ -174,6 +175,7 @@ export default function RegisterScreen() {
 							placeholder="Презиме"
 							value={data.surname}
 							onChangeText={changeHandler.bind(null, "surname")}
+							autoCapitalize="sentences"
 						/>
 
 						<TextInput
@@ -182,6 +184,7 @@ export default function RegisterScreen() {
 							placeholder="Емаил"
 							value={data.email}
 							onChangeText={changeHandler.bind(null, "email")}
+							autoCapitalize="none"
 						/>
 
 						<AddressInput

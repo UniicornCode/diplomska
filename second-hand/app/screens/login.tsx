@@ -61,6 +61,7 @@ export default function LoginScreen() {
 							placeholder="Емаил"
 							value={data.email}
 							onChangeText={changeHandler.bind(null, "email")}
+							autoCapitalize="none"
 						/>
 
 						<TextInput

@@ -94,11 +94,11 @@ export default function CameraScreen({ onCapture, closeCamera }: any) {
 					facing={facing}
 					ref={cameraRef}>
 					<View style={[globalStyles.camera_button_container, globalStyles.background_blue]}>
-						<TouchableOpacity style={[globalStyles.background_transparent, styles.button]} onPress={closeCamera}>
+						<TouchableOpacity onPress={closeCamera}>
 							<Icon name="close" size={40} color="white" type="font-awesome" />
 						</TouchableOpacity>
-						<TouchableOpacity style={[styles.takePicture, styles.button]} onPress={takePicture} />
-						<TouchableOpacity style={[globalStyles.background_transparent, styles.endButton]} onPress={toggleCameraFacing}>
+						<TouchableOpacity style={styles.takePicture} onPress={takePicture} />
+						<TouchableOpacity onPress={toggleCameraFacing}>
 							<Icon name="retweet" size={40} color="white" type="font-awesome" />
 						</TouchableOpacity>
 					</View>
@@ -116,17 +116,11 @@ const styles = StyleSheet.create({
 	camera: {
 		flex: 1,
 	},
-	button: {
-		height: 60,
-		justifyContent: 'center'
-	},
-	endButton: {
-		alignItems: 'flex-end'
-	},
 	takePicture: {
 		width: 60,
 		height: 60,
 		bottom: 0,
+		marginStart: 15,
 		borderRadius: 50,
 		backgroundColor: '#fff'
 	},
