@@ -30,8 +30,6 @@ export default function SimpleProductCard(product: IProduct) {
 					alignItems: "center",
 					flexDirection: "row",
 				}}>
-				<Text>Боја: </Text>
-				<View style={{ height: 20, backgroundColor: product.color, width: 100 }} />
 			</View>
 		</TouchableOpacity>
 	);
@@ -42,6 +40,7 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		fontWeight: "bold",
 		textAlign: "center",
-		marginVertical: 20,
-	},
+		marginTop: 20,
+		paddingHorizontal: 20
+	}
 });

@@ -61,31 +61,29 @@ export default function UserListOfProducts() {
 		<View style={globalStyles.background_transparent}>
 			<ImageBackground
 				source={require("@assets/images/background.png")}
-				style={globalStyles.background}
-			>
+				style={globalStyles.background}>
 				<ScrollView>
 					<Text style={[globalStyles.wide_title, styles.custom_width]}>
 						МОИ ПРОДУКТИ
 					</Text>
 					<BackButton title={"Назад"} />
-					<View style={globalStyles.container}>
+					<View style={[globalStyles.container]}>
 						{loading ? (
 							// Show a loading indicator while products are being fetched
 							<ActivityIndicator size="large" color={Colors.primaryColor} />
 						) : products.length ? (
-							products.map((product) => (
-								<UserProductCard key={product.id} {...product} />
+							products.map((product, index) => (
+								<View
+									key={product.id}
+									style={[
+										styles.space_between,
+										index === products.length - 1 && { marginBottom: 0 } // no margin after last card
+										]}>
+									<UserProductCard key={product.id} {...product} />
+								</View>
 							))
 						) : (
-							<View
-								style={{
-									flex: 1,
-									backgroundColor: "transparent",
-									justifyContent: "center",
-									alignItems: "center",
-									flexDirection: "row",
-								}}
-							>
+							<View style={styles.empty_box}>
 								<Text style={styles.description}>
 									Немате додадено производи
 								</Text>
@@ -109,4 +107,14 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 		fontSize: 18,
 	},
+	empty_box: {
+		flex: 1,
+		backgroundColor: "transparent",
+		justifyContent: "center",
+		alignItems: "center",
+		flexDirection: "row",
+	},
+	space_between: {
+		marginBottom: 10
+	}
 });

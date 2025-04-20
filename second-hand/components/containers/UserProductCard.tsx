@@ -1,8 +1,11 @@
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import globalStyles from "@assets/css/globalStyles";
 import { useRouter } from "expo-router";
 import { IProduct } from "@interfaces/types";
+import { getFirestore, deleteDoc, doc } from "@firebase/firestore";
+import Colors from "@/constants/Colors";
+import globalStyles from "@/assets/css/globalStyles";
+import { Icon } from "@rneui/themed";
 
 export default function UserProductCard(product: IProduct) {
 	const router = useRouter();
@@ -16,18 +19,46 @@ export default function UserProductCard(product: IProduct) {
 		}
 	};
 
+	const editProduct = () => {
+		if (product.id) {
+			router.push({
+				pathname: "/screens/create-edit-product",
+				params: { product: JSON.stringify(product) }
+			});
+		}
+	};
+
+	const deleteProduct = async () => {
+		if (product.id) {
+			try {
+				const db = getFirestore();
+				await deleteDoc(doc(db, "products", product.id));
+				alert("Успешно избришан производ!");
+			} catch (error: any) {
+				alert(error.message);
+			}
+		}
+	};
+
 	return (
-		<TouchableOpacity
-			style={[globalStyles.white_container, styles.row]}
-			onPress={openProductDetails}
-		>
-			{product && (
-				<>
-					<Image source={{ uri: product.image }} style={styles.image_product} />
-					<Text style={styles.text}>{product.category}</Text>
-				</>
-			)}
-		</TouchableOpacity>
+		<View style={globalStyles.white_container}>
+			<TouchableOpacity onPress={openProductDetails} style={styles.row}>
+				<Image source={{ uri: product.image }} style={styles.image_product} />
+
+				<Text style={styles.text}
+					numberOfLines={2}
+					ellipsizeMode="tail">{product.category}</Text>
+
+				<View style={styles.iconsContainer}>
+					<TouchableOpacity onPress={editProduct} style={styles.iconButton}>
+						<Icon name="pencil" type="entypo" size={24} color="black" />
+					</TouchableOpacity>
+					<TouchableOpacity onPress={deleteProduct} style={styles.iconButton}>
+						<Icon name="delete" type="materialicons" size={24} color={Colors.deleteColor} />
+					</TouchableOpacity>
+				</View>
+			</TouchableOpacity>
+		</View>
 	);
 }
 
@@ -38,12 +69,20 @@ const styles = StyleSheet.create({
 		borderRadius: 20,
 	},
 	row: {
-		marginVertical: 10,
-		justifyContent: "space-between",
-		flexDirection: "row",
+		alignItems: "center",
+		flexDirection: "row"
 	},
 	text: {
-		fontSize: 20,
-		paddingEnd: 30
+		alignSelf: "center",
+		fontSize: 18,
+		paddingHorizontal: 10,
+		flex: 1
 	},
+	iconsContainer: {
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
+	iconButton: {
+		paddingRight: 5,
+	}
 });

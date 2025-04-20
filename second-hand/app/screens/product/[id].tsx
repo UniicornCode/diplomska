@@ -63,18 +63,25 @@ export default function Product() {
 					<View style={[globalStyles.container, globalStyles.shadow]}>
 						<View style={globalStyles.white_container}>
 							<Image source={{ uri: product.image }} style={globalStyles.cloth_image} />
-							<View style={globalStyles.cloth_description}>
-								<View>
-									<Text style={styles.text}>Категорија</Text>
-									<Text style={styles.text}>Големина</Text>
-									<Text style={styles.text}>Бренд</Text>
-									<Text style={styles.text}>Продавач</Text>
+							<View style={styles.info_container}>
+								<View style={styles.row}>
+									<Text style={styles.title} numberOfLines={1}>Категорија</Text>
+									<Text style={styles.value} numberOfLines={2} ellipsizeMode="tail">{product.category}</Text>
 								</View>
-								<View>
-									<Text style={styles.text}>{product.category}</Text>
-									<Text style={styles.text}>{product.size}</Text>
-									<Text style={styles.text}>{product.brand}</Text>
-									<Text style={styles.text}>{seller?.name}</Text>
+
+								<View style={styles.row}>
+									<Text style={styles.title} numberOfLines={1}>Големина</Text>
+									<Text style={styles.value} numberOfLines={2} ellipsizeMode="tail">{product.size}</Text>
+								</View>
+
+								<View style={styles.row}>
+									<Text style={styles.title} numberOfLines={1}>Бренд</Text>
+									<Text style={styles.value} numberOfLines={2} ellipsizeMode="tail">{product.brand}</Text>
+								</View>
+
+								<View style={styles.row}>
+									<Text style={styles.title} numberOfLines={1}>Продавач</Text>
+									<Text style={styles.value} numberOfLines={2} ellipsizeMode="tail">{seller?.name}</Text>
 								</View>
 							</View>
 						</View>
@@ -96,6 +103,30 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		fontSize: 18,
-		marginVertical: 5,
+		marginTop: 5,
 	},
+	contain_rows: {
+		flex: 1
+	},
+	row: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+	},
+	title: {
+		fontSize: 18,
+		fontWeight: 'bold',
+		maxWidth: '50%',
+		flex: 1,
+		paddingVertical: 5
+	},
+	value: {
+		fontSize: 18,
+		maxWidth: '50%',
+		flex: 2,
+		paddingVertical: 5
+	},
+	info_container: {
+		width: "90%",
+		marginVertical: 20
+	}
 });

@@ -69,6 +69,10 @@ export default function Seller() {
 							</Text>
 							<Image source={{ uri: seller?.selectedImage }} style={[globalStyles.background_blue, styles.image_style]} />
 							<View style={styles.owner_description}>
+								<View style={styles.row}>
+									<Text style={styles.title} numberOfLines={1}>Телефонски број</Text>
+									<Text style={styles.value} numberOfLines={2} ellipsizeMode="tail">{seller?.phone}</Text>
+								</View>
 								<View>
 									<Text style={styles.text}>Телефонски број</Text>
 									<Text style={styles.text}>Е-маил</Text>
@@ -121,5 +125,23 @@ const styles = StyleSheet.create({
 	},
 	custom_width: {
 		maxWidth: 250,
+	},
+
+	row: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+	},
+	title: {
+		fontSize: 18,
+		fontWeight: 'bold',
+		maxWidth: '50%',
+		flex: 1,
+		paddingVertical: 5
+	},
+	value: {
+		fontSize: 18,
+		maxWidth: '50%',
+		flex: 2,
+		paddingVertical: 5
 	},
 });

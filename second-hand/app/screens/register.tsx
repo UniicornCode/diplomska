@@ -21,6 +21,7 @@ import { IRegister } from "@interfaces/types";
 import { useAuth } from "@services/context/AuthContext";
 import CameraScreen from "@screens/camera";
 import PhotoSourceModal from "@/components/custom/PhotoSourceModal";
+import { compressAndConvertToBase64 } from "@services/CompressImage";
 
 const initialState = {
 	selectedImage: "",
@@ -92,8 +93,9 @@ export default function RegisterScreen() {
 			});
 
 			if (!pickerResult.canceled) {
-				const imageUri = pickerResult.assets[0].uri;
-				changeHandler("selectedImage", imageUri);
+				const pickedUri = pickerResult.assets[0].uri;
+				const compressedBase64 = await compressAndConvertToBase64(pickedUri);
+				changeHandler("image", compressedBase64);
 			}
 
 			setIsModalVisible(false);

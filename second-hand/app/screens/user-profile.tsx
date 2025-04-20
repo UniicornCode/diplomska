@@ -90,7 +90,7 @@ export default function UserProfile() {
 				<ScrollView>
 					<Text style={[globalStyles.wide_title]}>МОЈ ПРОФИЛ</Text>
 					<BackButton title={"Назад"} />
-					<View style={globalStyles.container}>
+					<View style={[globalStyles.container, globalStyles.shadow]}>
 						<TextInput
 							style={globalStyles.input_field}
 							placeholder="Име"
@@ -121,7 +121,6 @@ export default function UserProfile() {
 							keyboardType="phone-pad"
 							placeholder="Телефон"
 							value={userData?.phone}
-							editable={false}
 							onChangeText={changeHandler.bind(null, "phone")}
 						/>
 

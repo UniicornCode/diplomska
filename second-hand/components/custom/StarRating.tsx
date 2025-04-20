@@ -8,7 +8,7 @@ interface StarRatingProps {
 	isDisabled: boolean;
 }
 
-const StarRating: React.FC<StarRatingProps> = ({ rating, isDisabled }) => {
+export default function StarRatingProps({ rating, isDisabled }: StarRatingProps) {
 	const [selectedRating, setSelectedRating] = useState<number>(rating);
 
 	const handleRate = (newRating: number) => {
@@ -25,9 +25,10 @@ const StarRating: React.FC<StarRatingProps> = ({ rating, isDisabled }) => {
 					onPress={() => handleRate(index)}
 				>
 					<Icon
-						name={selectedRating >= index ? 'ios-star' : 'ios-star-outline'}
+						name={selectedRating >= index ? 'star' : 'star-outline'}
 						size={30}
 						color={selectedRating >= index ? 'gold' : 'gray'}
+						type="materialicons"
 					/>
 				</TouchableOpacity>
 			))}
@@ -47,5 +48,3 @@ const styles = StyleSheet.create({
 		padding: 5,
 	},
 });
-
-export default StarRating;

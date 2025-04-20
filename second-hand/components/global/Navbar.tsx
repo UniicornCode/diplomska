@@ -19,7 +19,6 @@ export default function Navbar() {
 		<SafeAreaView style={[styles.container, globalStyles.background_blue]}>
 			<View style={[styles.navContainer, globalStyles.background_blue]}>
 				<Image source={require("@assets/images/logo_white.png")} style={globalStyles.logo_style} />
-				{/*TODO When user is logged in, the user image should lead to his profile, when not, to login page*/}
 				{user && (
 					<TouchableOpacity onPress={handleOpenProfile}>
 						<Image
@@ -49,8 +48,8 @@ const styles = StyleSheet.create({
 		paddingTop: StatusBar.currentHeight,
 	},
 	logo: {
-		height: 24,
-		width: 28,
-		borderRadius: 100,
+		height: 40,
+		width: 40,
+		borderRadius: 50,
 	},
 });

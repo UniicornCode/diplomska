@@ -5,19 +5,19 @@ import ShowPhotoPreview from "@components/custom/ShowPhotoPreview";
 import { Icon } from '@rneui/themed';
 import * as ImageManipulator from 'expo-image-manipulator';
 import globalStyles from "@assets/css/globalStyles";
+import { CapturedImage, CameraScreenProps } from '@/interfaces/types';
 
-export default function CameraScreen({ onCapture, closeCamera }: any) {
+export default function CameraScreen({ onCapture, closeCamera, style }: CameraScreenProps) {
 	const [facing, setFacing] = useState<CameraType>('back');
 	const [permission, requestPermission] = useCameraPermissions();
 	const cameraRef = useRef<CameraView>(null);
 	const [previewVisible, setPreviewVisible] = useState(false)
-	const [capturedImage, setCapturedImage] = useState<any>(null)
+	const [capturedImage, setCapturedImage] = useState<CapturedImage>(null)
 
 	if (!permission) {
 		// Camera permissions are still loading
 		return <View />;
 	}
-
 
 	if (!permission.granted) {
 		// Camera permissions are not granted yet
@@ -40,17 +40,12 @@ export default function CameraScreen({ onCapture, closeCamera }: any) {
 		setFacing(current => (current === 'back' ? 'front' : 'back'));
 	}
 
-	const takeNewPhoto = () => {
+	const retakePhoto = () => {
 		setPreviewVisible(false)
 		setCapturedImage(null)
 	}
 
 	const takePicture = async () => {
-		if (!permission?.granted) {
-			alert("Camera permission is required!");
-			return;
-		}
-
 		if (!cameraRef.current) {
 			console.error("Camera reference is not available.");
 			return;
@@ -64,18 +59,18 @@ export default function CameraScreen({ onCapture, closeCamera }: any) {
 				return;
 			}
 
+			let finalPhotoUri = photo.uri;
+
 			if (facing === 'front') {
 				const flippedPhoto = await ImageManipulator.manipulateAsync(
 					photo.uri,
 					[{ flip: ImageManipulator.FlipType.Horizontal }]
 				);
-
-				setCapturedImage(flippedPhoto);
-				setPreviewVisible(true);
-			} else {
-				setCapturedImage(photo);
-				setPreviewVisible(true);
+				finalPhotoUri = flippedPhoto.uri;
 			}
+
+			setCapturedImage(finalPhotoUri);
+			setPreviewVisible(true);
 		}
 		catch (error) {
 			console.error("Image manipulation failed:", error);
@@ -84,11 +79,10 @@ export default function CameraScreen({ onCapture, closeCamera }: any) {
 		}
 	};
 
-
 	return (
 		<View style={styles.container}>
 			{previewVisible && capturedImage ?
-				(<ShowPhotoPreview photo={capturedImage} takeNewPhoto={takeNewPhoto} saveImage={onCapture} closeCamera={closeCamera} />) :
+				(<ShowPhotoPreview photo={{ uri: capturedImage }} retakePhoto={retakePhoto} saveImage={onCapture} closeCamera={closeCamera} />) :
 				(<CameraView
 					style={styles.camera}
 					facing={facing}

@@ -32,6 +32,19 @@ export interface IProduct {
 	price: string;
 }
 
+export interface ShowPhotoPreviewProps {
+	photo: { uri: string };
+	retakePhoto: () => void;
+	saveImage: (base64Uri: string) => void;
+	closeCamera: () => void;
+}
+
+export interface CameraScreenProps {
+	onCapture: (base64Uri: string) => void;
+	closeCamera: () => void;
+	style?: any;
+}
+
 export const categories = [
 	"Блузи",
 	"Панталони",
@@ -64,3 +77,5 @@ export type ValidRoutes =
 	| "/screens/seller"
 	| "/screens/user-list-of-products"
 	| "/screens/user-profile";
+
+export type CapturedImage = string | null;

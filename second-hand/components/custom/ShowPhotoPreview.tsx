@@ -1,13 +1,23 @@
 import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import globalStyles from "@assets/css/globalStyles";
-import { useNavigation } from "expo-router";
 import { Icon } from '@rneui/themed';
 import React from "react";
+import * as FileSystem from 'expo-file-system';
+import { ShowPhotoPreviewProps } from "@/interfaces/types";
+import { compressAndConvertToBase64 } from "@/app/services/CompressImage";
 
-export default function ShowPhotoPreview({ photo, takeNewPhoto, saveImage, closeCamera }: any) {
-	const processPhoto = () => {
-		saveImage(photo.uri)
-		closeCamera()
+export default function ShowPhotoPreview({ photo, retakePhoto, saveImage, closeCamera }: ShowPhotoPreviewProps) {
+	const processPhoto = async () => {
+		try {
+			if (!photo?.uri) return;
+
+			const compressedBase64 = await compressAndConvertToBase64(photo.uri);
+
+			saveImage(compressedBase64);
+			closeCamera();
+		} catch (error) {
+			console.error("Error processing photo:", error);
+		}
 	}
 
 	return (
@@ -17,8 +27,8 @@ export default function ShowPhotoPreview({ photo, takeNewPhoto, saveImage, close
 					<TouchableOpacity onPress={closeCamera} style={styles.button}>
 						<Icon name="close" size={40} color="white" type="font-awesome" />
 					</TouchableOpacity>
-					<TouchableOpacity onPress={takeNewPhoto} style={styles.button}>
-						<Text style={[globalStyles.text_white, styles.text]}>Take new photo</Text>
+					<TouchableOpacity onPress={retakePhoto} style={styles.button}>
+						<Text style={[globalStyles.text_white, styles.text]}>Retake photo</Text>
 					</TouchableOpacity>
 					<TouchableOpacity onPress={processPhoto} style={styles.button}>
 						<Icon name="save" size={40} color="white" type="font-awesome" />

@@ -14,14 +14,15 @@ import { useEffect, useState } from "react";
 import SecondaryButton from "@components/buttons/SecondaryButton";
 import ImageInput from "@components/inputs/ImageInput";
 import BackButton from "@components/buttons/BackButton";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { IProduct, categories, sizes } from "@interfaces/types";
 import { Picker } from "@react-native-picker/picker";
 import ColorPicker from "react-native-wheel-color-picker";
 import { useAuth } from "@services/context/AuthContext";
-import { getFirestore, collection, addDoc, doc, getDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import PhotoSourceModal from "@/components/custom/PhotoSourceModal";
 import CameraScreen from "@screens/camera";
+import { compressAndConvertToBase64 } from "@services/CompressImage";
 
 const initialState = {
 	category: "Блузи",
@@ -42,31 +43,41 @@ export default function CreateEditProduct() {
 	const [isCameraVisible, setIsCameraVisible] = useState(false);
 	const router = useRouter();
 	const { user } = useAuth();
+	const params = useLocalSearchParams();
+
+	useEffect(() => {
+		if (params.product) {
+			const existingProduct = JSON.parse(params.product as string) as IProduct;
+			setData(existingProduct);
+		}
+	}, [params.product]);
 
 	useEffect(() => {
 		const fetchUserAddress = async () => {
 			if (!user) return;
 
-			try {
-				const db = getFirestore();
-				const userDoc = await getDoc(doc(db, "users", user.uid));
+			if (!params.product) {
+				try {
+					const db = getFirestore();
+					const userDoc = await getDoc(doc(db, "users", user.uid));
 
-				if (userDoc.exists()) {
-					const userData = userDoc.data();
-					if (userData.address) {
-						setData((prev) => ({
-							...prev,
-							address: userData.address,
-						}));
+					if (userDoc.exists()) {
+						const userData = userDoc.data();
+						if (userData.address) {
+							setData((prev) => ({
+								...prev,
+								address: userData.address,
+							}));
+						}
 					}
+				} catch (error) {
+					console.error("Error fetching user address:", error);
 				}
-			} catch (error) {
-				console.error("Error fetching user address:", error);
 			}
 		};
 
 		fetchUserAddress();
-	}, [user]);
+	}, [user, params.product]);
 
 	const changeHandler = (name: string, value: string) => {
 		setData((prev) => ({ ...prev, [name]: value }));
@@ -77,8 +88,12 @@ export default function CreateEditProduct() {
 		setIsModalVisible(true);
 	};
 
-	const handleCapture = (imgUri: string) => {
-		changeHandler("image", imgUri);
+	const handleCapture = async (imgUri: string) => {
+		try {
+			changeHandler("image", imgUri);
+		} catch (error) {
+			console.error("Error uploading captured image:", error);
+		}
 	}
 
 	const handleModalSelection = async (selectedSource: string) => {
@@ -100,8 +115,9 @@ export default function CreateEditProduct() {
 			});
 
 			if (!pickerResult.canceled) {
-				const imageUri = pickerResult.assets[0].uri;
-				changeHandler("image", imageUri);
+				const pickedUri = pickerResult.assets[0].uri;
+				const compressedBase64 = await compressAndConvertToBase64(pickedUri);
+				changeHandler("image", compressedBase64);
 			}
 
 			setIsModalVisible(false);
@@ -112,7 +128,7 @@ export default function CreateEditProduct() {
 		}
 	};
 
-	const handleAddNew = async () => {
+	const handleSubmit = async () => {
 		if (!data.image) {
 			alert("Ве молиме изберете слика!");
 			return;
@@ -147,10 +163,15 @@ export default function CreateEditProduct() {
 			const db = getFirestore();
 			const newProduct = { ...data, userId: user.uid };
 
-			// Reference the "products" collection and add the new document
-			await addDoc(collection(db, "products"), newProduct);
-
-			alert("Успешно додадовте производ");
+			if (data.id) {
+				// EDIT mode
+				await setDoc(doc(db, "products", data.id), newProduct);
+				alert("Успешно променет производ");
+			} else {
+				// CREATE mode
+				await addDoc(collection(db, "products"), newProduct);
+				alert("Успешно додаден производ");
+			}
 
 			router.replace({
 				pathname: "/screens/list-of-products",
@@ -238,7 +259,7 @@ export default function CreateEditProduct() {
 							keyboardType="numeric"
 							onChangeText={changeHandler.bind(null, "price")}
 						/>
-						<SecondaryButton title="Додади" onPress={handleAddNew} />
+						<SecondaryButton title={data.id ? "Измени" : "Додади"} onPress={handleSubmit} />
 
 						<Modal
 							visible={isCameraVisible}

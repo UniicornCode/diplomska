@@ -130,9 +130,8 @@ const globalStyles = StyleSheet.create({
 	cloth_description: {
 		paddingVertical: 20,
 		width: 250,
-		flexGrow: 1,
-		justifyContent: 'space-between',
-		flexDirection: "row"
+		flexDirection: "row",
+		justifyContent: "space-between"
 	},
 	simple_product: {
 		margin: 20,
