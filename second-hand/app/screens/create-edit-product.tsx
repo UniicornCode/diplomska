@@ -22,7 +22,7 @@ import { useAuth } from "@services/context/AuthContext";
 import { getFirestore, collection, addDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import PhotoSourceModal from "@/components/custom/PhotoSourceModal";
 import CameraScreen from "@screens/camera";
-import { compressAndConvertToBase64 } from "@services/CompressImage";
+import { compressAndConvertToBase64 } from "@/utils/CompressImage";
 
 const initialState = {
 	category: "Блузи",

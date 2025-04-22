@@ -19,6 +19,7 @@ module.exports = function (api)
 						'@images': './assets/images',
 						'@fonts': './assets/fonts',
 						'@css': './assets/css',
+						'@utils': './utils'
 					},
 				},
 			],

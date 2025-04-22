@@ -4,7 +4,7 @@ import { Icon } from '@rneui/themed';
 import React from "react";
 import * as FileSystem from 'expo-file-system';
 import { ShowPhotoPreviewProps } from "@/interfaces/types";
-import { compressAndConvertToBase64 } from "@/app/services/CompressImage";
+import { compressAndConvertToBase64 } from "@/utils/CompressImage";
 
 export default function ShowPhotoPreview({ photo, retakePhoto, saveImage, closeCamera }: ShowPhotoPreviewProps) {
 	const processPhoto = async () => {

@@ -21,7 +21,7 @@ import { IRegister } from "@interfaces/types";
 import { useAuth } from "@services/context/AuthContext";
 import CameraScreen from "@screens/camera";
 import PhotoSourceModal from "@/components/custom/PhotoSourceModal";
-import { compressAndConvertToBase64 } from "@services/CompressImage";
+import { compressAndConvertToBase64 } from "@/utils/CompressImage";
 
 const initialState = {
 	selectedImage: "",
