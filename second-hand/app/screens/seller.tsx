@@ -115,8 +115,8 @@ const styles = StyleSheet.create({
 	},
 	image_style: {
 		marginVertical: 20,
-		width: 100, // or another value
-		height: 100, // or another value
+		width: 100,
+		height: 100,
 	},
 	text: {
 		fontSize: 15,

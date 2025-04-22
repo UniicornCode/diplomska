@@ -1,8 +1,9 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import globalStyles from "@assets/css/globalStyles";
+import { PhotoSourceModalProps } from '@/interfaces/types';
 
-export default function PhotoSourceModal({ isVisible, handleChoice }) {
+export default function PhotoSourceModal({ isVisible, handleChoice }: PhotoSourceModalProps) {
 
 	return (
 		<Modal visible={isVisible} transparent animationType="slide">

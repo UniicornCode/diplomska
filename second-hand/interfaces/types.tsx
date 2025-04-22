@@ -45,6 +45,11 @@ export interface CameraScreenProps {
 	style?: any;
 }
 
+export interface PhotoSourceModalProps {
+	isVisible: boolean;
+	handleChoice: (selectedSource: string) => void;
+}
+
 export const categories = [
 	"Блузи",
 	"Панталони",
@@ -54,11 +59,9 @@ export const categories = [
 	"Фустани",
 	"Јакни",
 	"Шорцеви",
-	"Халки",
 	"Шалови",
 	"Чанти",
 	"Чевли",
-	"Чорапи",
 	"Друго",
 ];
 
