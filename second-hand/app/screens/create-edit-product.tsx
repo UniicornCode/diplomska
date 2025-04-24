@@ -15,7 +15,8 @@ import SecondaryButton from "@components/buttons/SecondaryButton";
 import ImageInput from "@components/inputs/ImageInput";
 import BackButton from "@components/buttons/BackButton";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { IProduct, categories, sizes } from "@interfaces/types";
+import { IProduct } from "@interfaces/types";
+import Products from "@/constants/Products";
 import { Picker } from "@react-native-picker/picker";
 import ColorPicker from "react-native-wheel-color-picker";
 import { useAuth } from "@services/context/AuthContext";
@@ -203,7 +204,7 @@ export default function CreateEditProduct() {
 							selectedValue={data.category}
 							style={globalStyles.picker}
 							onValueChange={changeHandler.bind(null, "category")}>
-							{categories.map((category) => (
+							{Products.categories.map((category) => (
 								<Picker.Item key={category} label={category} value={category} />
 							))}
 						</Picker>
@@ -213,7 +214,7 @@ export default function CreateEditProduct() {
 							selectedValue={data.size}
 							style={globalStyles.picker}
 							onValueChange={changeHandler.bind(null, "size")}>
-							{sizes.map((size) => (
+							{Products.sizes.map((size) => (
 								<Picker.Item key={size} label={size} value={size} />
 							))}
 						</Picker>

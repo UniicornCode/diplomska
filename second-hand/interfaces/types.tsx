@@ -11,6 +11,10 @@ export interface IRegister {
 	password: string;
 }
 
+export interface IUser extends IRegister {
+	userId: string;
+}
+
 export interface ILogin {
 	email: string;
 	password: string;
@@ -32,6 +36,17 @@ export interface IProduct {
 	price: string;
 }
 
+export interface IRating {
+	id: string;
+	userId: string;
+	userName: string;
+	sellerId: string;
+	sellerName: string;
+	rating: number;
+	comment: string;
+	createdAt: any;
+}
+
 export interface ShowPhotoPreviewProps {
 	photo: { uri: string };
 	retakePhoto: () => void;
@@ -50,22 +65,11 @@ export interface PhotoSourceModalProps {
 	handleChoice: (selectedSource: string) => void;
 }
 
-export const categories = [
-	"Блузи",
-	"Панталони",
-	"Сукњи",
-	"Маици",
-	"Капи",
-	"Фустани",
-	"Јакни",
-	"Шорцеви",
-	"Шалови",
-	"Чанти",
-	"Чевли",
-	"Друго",
-];
-
-export const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
+export interface StarRatingProps {
+	rating: number;
+	setRating?: (rating: number) => void;
+	isDisabled: boolean;
+}
 
 export type ValidRoutes =
 	| "/"

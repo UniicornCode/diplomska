@@ -9,7 +9,7 @@ import globalStyles from "@assets/css/globalStyles";
 import CategoryButton from "@components/buttons/CategoryButton";
 import { useRouter } from "expo-router";
 import BackButton from "@components/buttons/BackButton";
-import { categories } from "@interfaces/types";
+import Products from "@/constants/Products";
 import { Dimensions } from "react-native";
 import { useAuth } from "@services/context/AuthContext";
 
@@ -36,7 +36,7 @@ export default function Categories() {
 				<View style={[globalStyles.container, globalStyles.shadow]}>
 					<Text style={globalStyles.title}>Категории</Text>
 					<ScrollView horizontal={false} showsVerticalScrollIndicator={true} style={!user ? { height: desiredHeight } : null}>
-						{categories.map((category) => (
+						{Products.categories.map((category) => (
 							<CategoryButton key={category} title={category} onPress={() => handleNavigation(category)} />
 						))}
 					</ScrollView>

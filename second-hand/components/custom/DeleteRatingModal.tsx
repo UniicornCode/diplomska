@@ -1,34 +1,37 @@
-import { Modal, View, Text, StyleSheet } from "react-native";
-import SecondaryButton from "../buttons/SecondaryButton";
-import Colors from "@/constants/Colors";
+import React from 'react';
+import { Modal, View, Text, StyleSheet } from 'react-native';
+import SecondaryButton from '../buttons/SecondaryButton';
+import Colors from '@/constants/Colors';
 
-interface DeleteProfileModalProps {
+interface DeleteRatingsModalProps {
 	visible: boolean;
-	onConfirm: () => void;
 	onCancel: () => void;
+	onConfirm: () => void;
 }
 
-export default function DeleteProfileModal({ visible, onConfirm, onCancel }: DeleteProfileModalProps) {
+export default function DeleteRatingsModal({
+	visible,
+	onCancel,
+	onConfirm
+}: DeleteRatingsModalProps) {
+
 	return (
 		<Modal
 			visible={visible}
 			transparent
 			animationType="fade"
-			onRequestClose={onCancel}
+			onRequestClose={onCancel}  // Close modal on back press
 		>
 			<View style={styles.modalOverlay}>
 				<View style={styles.modalContent}>
 					<Text style={styles.modalText}>
-						Дали сте сигурни дека сакате да го избришете профилот? Исто така, сите ваши продукти ќе бидат избришани.
+						Дали сте сигурни дека сакате да го избришете овој рејтинг?
 					</Text>
 
-					<SecondaryButton
-						title="Откажи"
-						onPress={onCancel} />
-
+					<SecondaryButton title="Откажи" onPress={onCancel} />
 					<SecondaryButton
 						title="Потврди"
-						onPress={onConfirm}
+						onPress={() => onConfirm()}
 						background={Colors.deleteColor}
 					/>
 				</View>

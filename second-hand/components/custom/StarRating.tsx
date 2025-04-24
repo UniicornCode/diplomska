@@ -1,18 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
-// @ts-ignore
 import { Icon } from '@rneui/themed';
+import { StarRatingProps } from '@/interfaces/types';
 
-interface StarRatingProps {
-	rating: number;
-	isDisabled: boolean;
-}
-
-export default function StarRatingProps({ rating, isDisabled }: StarRatingProps) {
-	const [selectedRating, setSelectedRating] = useState<number>(rating);
-
-	const handleRate = (newRating: number) => {
-		setSelectedRating(newRating);
+export default function StarRatingComponent({ rating, setRating, isDisabled }: StarRatingProps) {
+	const handlePress = (index: number) => {
+		if (!isDisabled && setRating) {
+			setRating(index);
+		}
 	};
 
 	return (
@@ -22,12 +17,12 @@ export default function StarRatingProps({ rating, isDisabled }: StarRatingProps)
 					disabled={isDisabled}
 					key={index}
 					style={styles.star}
-					onPress={() => handleRate(index)}
+					onPress={() => handlePress(index)}
 				>
 					<Icon
-						name={selectedRating >= index ? 'star' : 'star-outline'}
+						name={rating >= index ? 'star' : 'star-outline'}
 						size={30}
-						color={selectedRating >= index ? 'gold' : 'gray'}
+						color={rating >= index ? 'gold' : 'gray'}
 						type="materialicons"
 					/>
 				</TouchableOpacity>

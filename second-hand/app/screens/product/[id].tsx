@@ -9,7 +9,7 @@ import {
 import globalStyles from "@/assets/css/globalStyles";
 import BackButton from "@/components/buttons/BackButton";
 import ContactFooter from "@/components/global/ContactFooter";
-import { IProduct, IRegister } from "@interfaces/types";
+import { IProduct, IRegister, IUser } from "@interfaces/types";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "@services/context/AuthContext";
@@ -18,9 +18,9 @@ import { getFirestore, doc, getDoc } from "firebase/firestore";
 export default function Product() {
 	const { product: productString } = useLocalSearchParams();
 	const product: IProduct = productString ? JSON.parse(productString as string) : {};
-	const [seller, setSeller] = useState<IRegister>();
+	const [seller, setSeller] = useState<IUser>();
 
-	const fetchUserData = async (userId: string) => {
+	const fetchUserData = async (userId: string): Promise<IUser | null> => {
 		try {
 			const db = getFirestore();
 			const userRef = doc(db, "users", userId);
@@ -28,7 +28,8 @@ export default function Product() {
 
 			// If the user data exists, return it. Otherwise, return null or throw an error.
 			if (snapshot.exists()) {
-				return snapshot.data() as IRegister;
+				const userData = snapshot.data() as IRegister;
+				return { ...userData, userId };
 			} else {
 				console.error(`User with ID ${userId} not found.`);
 				return null;

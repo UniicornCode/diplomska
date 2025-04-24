@@ -6,56 +6,45 @@ import StarRating from "@components/custom/StarRating";
 import SecondaryButton from "@components/buttons/SecondaryButton";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAuth } from "@services/context/AuthContext";
-import { IRegister } from "@/interfaces/types";
+import { IUser } from "@interfaces/types";
+import calculatDistanceBetweenUsers from "@/utils/CalculateDistanceBetweenUsers";
+import { useEffect, useState } from "react";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { db } from "@app/firebase";
+import { calculateAverageRating } from "@/utils/CalculateAverageRating";
+
 
 export default function Seller() {
 	const router = useRouter();
 	const { seller: sellerString } = useLocalSearchParams();
-	const seller: IRegister = sellerString ? JSON.parse(sellerString as string) : {};
+	const seller: IUser = sellerString ? JSON.parse(sellerString as string) : {};
+	const { userData } = useAuth();
+	const [averageRating, setAverageRating] = useState<number>(0);
 
-	// TODO navigate to the list of a particular ID of a seller
 	const showListOfRatings = () => {
 		router.push({
-			pathname: "/(tabs)"
-			// should be screens/list-of-ratings
+			pathname: "/screens/rating/list-of-ratings",
+			params: { seller: JSON.stringify(seller) }
 		})
 	};
 
-	// TODO open a rating form for a particular seller
-	const openRatingForm = () => {
-		router.push({
-			pathname: "/(tabs)"
-			// should be screens/leave-rating
-		})
-	};
 
-	function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
-		const R = 6371; // Earth's radius in kilometers
+	useEffect(() => {
+		if (!seller.userId) return;
 
-		// Convert degrees to radians
-		const degToRad = (degree: number) => degree * (Math.PI / 180);
+		const q = query(
+			collection(db, "ratings"),
+			where("sellerId", "==", seller.userId)
+		);
 
-		// Convert latitudes and longitudes from degrees to radians
-		lat1 = degToRad(lat1);
-		lon1 = degToRad(lon1);
-		lat2 = degToRad(lat2);
-		lon2 = degToRad(lon2);
+		const unsubscribe = onSnapshot(q, (snapshot) => {
+			const ratings = snapshot.docs.map(doc => doc.data().rating);
+			const avg = calculateAverageRating(ratings);
+			setAverageRating(avg);
+		});
 
-		// Calculate differences between latitudes and longitudes
-		const dLat = lat2 - lat1;
-		const dLon = lon2 - lon1;
-
-		// Haversine formula
-		const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-			Math.cos(lat1) * Math.cos(lat2) *
-			Math.sin(dLon / 2) * Math.sin(dLon / 2);
-		const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-		const distance = R * c;
-
-		return distance; // Returns distance in kilometers
-	}
-
-	const { userData } = useAuth();
+		return () => unsubscribe();
+	}, [seller.userId]);
 
 	return (
 		<View style={globalStyles.background_transparent}>
@@ -70,32 +59,30 @@ export default function Seller() {
 							<Image source={{ uri: seller?.selectedImage }} style={[globalStyles.background_blue, styles.image_style]} />
 							<View style={styles.owner_description}>
 								<View style={styles.row}>
-									<Text style={styles.title} numberOfLines={1}>Телефонски број</Text>
+									<Text style={styles.title} numberOfLines={2}>Телефонски број</Text>
 									<Text style={styles.value} numberOfLines={2} ellipsizeMode="tail">{seller?.phone}</Text>
 								</View>
-								<View>
-									<Text style={styles.text}>Телефонски број</Text>
-									<Text style={styles.text}>Е-маил</Text>
-									<Text style={styles.text}>Оддалеченост</Text>
+								<View style={styles.row}>
+									<Text style={styles.title} numberOfLines={2}>Е-маил</Text>
+									<Text style={styles.value} numberOfLines={2} ellipsizeMode="tail">{seller?.email}</Text>
 								</View>
-								<View>
-									<Text style={styles.text}>{seller?.phone}</Text>
-									<Text style={styles.text}>{seller?.email}</Text>
-									<Text style={styles.text}>{haversineDistance(
+								<View style={styles.row}>
+									<Text style={styles.title} numberOfLines={2}>Оддалеченост</Text>
+									<Text style={styles.value} numberOfLines={2} ellipsizeMode="tail">{calculatDistanceBetweenUsers(
 										+(seller?.address?.latitude || 0),
 										+(seller?.address?.longitude || 0),
 										+(userData?.address?.latitude || 0),
 										+(userData?.address?.longitude || 0)
-									)} km</Text>
+									).toPrecision(3)} км</Text>
 								</View>
 							</View>
-							<Text>Рејтинг</Text>
-							<StarRating rating={3} isDisabled={true} />
-							{/* <SecondaryButton title={"Погледни рејтинзи"} onPress={showListOfRatings} /> */}
+							<Text style={styles.rating}>Просечна оценка</Text>
+							<StarRating rating={averageRating} isDisabled={true} />
+							<SecondaryButton title={"Погледни оценки"} onPress={showListOfRatings} />
 						</View>
 					</View>
 				</ScrollView>
-				{/*<RatingFooter onPress={openRatingForm} />*/}
+				<RatingFooter {...seller} />
 			</ImageBackground>
 		</View>
 	);
@@ -104,14 +91,13 @@ export default function Seller() {
 const styles = StyleSheet.create({
 	seller_name: {
 		letterSpacing: 3,
+		fontSize: 20,
 		marginTop: 20
 	},
 	owner_description: {
 		paddingVertical: 20,
 		width: 250,
-		flexGrow: 1,
-		justifyContent: "space-between",
-		flexDirection: "row",
+		flexGrow: 1
 	},
 	image_style: {
 		marginVertical: 20,
@@ -123,25 +109,27 @@ const styles = StyleSheet.create({
 		marginVertical: 5,
 		maxWidth: 150,
 	},
-	custom_width: {
-		maxWidth: 250,
-	},
-
 	row: {
 		flexDirection: "row",
 		justifyContent: "space-between",
 	},
 	title: {
-		fontSize: 18,
+		fontSize: 17,
 		fontWeight: 'bold',
 		maxWidth: '50%',
 		flex: 1,
 		paddingVertical: 5
 	},
 	value: {
-		fontSize: 18,
+		fontSize: 17,
 		maxWidth: '50%',
 		flex: 2,
-		paddingVertical: 5
+		paddingVertical: 5,
+		paddingStart: 5
 	},
+	rating: {
+		fontSize: 17,
+		fontWeight: "bold",
+		marginVertical: 5
+	}
 });

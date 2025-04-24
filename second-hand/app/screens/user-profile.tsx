@@ -17,27 +17,32 @@ import { useRouter } from "expo-router";
 import { useAuth } from "@services/context/AuthContext";
 import { getAuth, deleteUser } from "firebase/auth";
 import { getFirestore, doc, deleteDoc, collection, query, where, getDocs } from "firebase/firestore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DeleteProfileModal from "@/components/custom/DeleteProfileModal";
 import SecondaryButton from "@/components/buttons/SecondaryButton";
 import Colors from "@/constants/Colors";
+import { calculateAverageRating } from "@/utils/CalculateAverageRating";
 
 export default function UserProfile() {
 	const router = useRouter();
 	const { signOut } = useAuth();
-	const { userData } = useAuth();
+	const { userData, user } = useAuth();
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
-	const changeHandler = (name: string, value: string) => { };
+	const [averageRating, setAverageRating] = useState<number>(0);
 
-	// TODO take the list of ratings per user and calculate the average
-	const calculateRating = () => {
-		return 2;
-	};
+	const changeHandler = (name: string, value: string) => { };
 
 	// TODO using the user id, open his list of products
 	const openUserProducts = () => {
 		router.push({
 			pathname: "/screens/user-list-of-products"
+		});
+	};
+
+	// TODO show logged in user rating
+	const openUserRatings = () => {
+		router.push({
+			pathname: "/screens/rating/list-of-ratings"
 		});
 	};
 
@@ -47,6 +52,27 @@ export default function UserProfile() {
 			pathname: "/screens/login"
 		});
 	};
+
+	const fetchUserRatings = async () => {
+		const db = getFirestore();
+		const ratingsRef = collection(db, "ratings");
+		const q = query(ratingsRef, where("userId", "==", user?.uid));
+		const querySnapshot = await getDocs(q);
+
+		const userRatings: any[] = [];
+
+		querySnapshot.forEach((doc) => {
+			const ratingData = doc.data();
+			userRatings.push(ratingData);
+		});
+
+		const average = calculateAverageRating(userRatings);
+		setAverageRating(average);
+	};
+
+	useEffect(() => {
+		fetchUserRatings();
+	}, []);
 
 	const deleteUserAccount = async () => {
 		try {
@@ -126,8 +152,14 @@ export default function UserProfile() {
 
 						{/* <Button title="Зачувај" onPress={() => {}} /> */}
 						<MyProductsButton onPress={openUserProducts} />
+
+						{/* TODO design the button for my ratings */}
+						<TouchableOpacity onPress={openUserRatings} style={styles.button}>
+							<Text style={styles.textBtn}>Мои оценки</Text>
+						</TouchableOpacity>
+
 						<Text style={styles.text}>Просечен рејтинг:</Text>
-						<StarRating rating={calculateRating()} isDisabled={true} />
+						<StarRating rating={averageRating} isDisabled={true} />
 					</View>
 
 					<View style={{ marginBottom: 40 }}>
