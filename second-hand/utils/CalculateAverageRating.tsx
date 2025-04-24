@@ -3,7 +3,7 @@ export const calculateAverageRating = (ratings: any[]): number => {
 	let count = 0;
 
 	ratings.forEach((rating) => {
-		totalRating += rating.rating;
+		totalRating += rating;
 		count += 1;
 	});
 
