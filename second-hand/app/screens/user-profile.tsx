@@ -22,27 +22,29 @@ import DeleteProfileModal from "@/components/custom/DeleteProfileModal";
 import SecondaryButton from "@/components/buttons/SecondaryButton";
 import Colors from "@/constants/Colors";
 import { calculateAverageRating } from "@/utils/CalculateAverageRating";
+import MyRatingsButton from "@/components/buttons/MyRatingsButton";
+import { IUser } from "@/interfaces/types";
 
 export default function UserProfile() {
 	const router = useRouter();
 	const { signOut } = useAuth();
 	const { userData, user } = useAuth();
+	const [seller, setSeller] = useState<IUser | null>(null);
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [averageRating, setAverageRating] = useState<number>(0);
 
 	const changeHandler = (name: string, value: string) => { };
 
-	// TODO using the user id, open his list of products
 	const openUserProducts = () => {
 		router.push({
 			pathname: "/screens/user-list-of-products"
 		});
 	};
 
-	// TODO show logged in user rating
 	const openUserRatings = () => {
 		router.push({
-			pathname: "/screens/rating/list-of-ratings"
+			pathname: "/screens/rating/list-of-ratings",
+			params: { seller: JSON.stringify(seller) }
 		});
 	};
 
@@ -52,6 +54,22 @@ export default function UserProfile() {
 			pathname: "/screens/login"
 		});
 	};
+
+	useEffect(() => {
+		if (user && userData) {
+			setSeller({
+				selectedImage: userData.selectedImage ?? "",
+				name: userData.name ?? "",
+				surname: userData.surname ?? "",
+				email: userData.email ?? "",
+				address: userData.address ?? { latitude: "", longitude: "" },
+				phone: userData.phone ?? "",
+				password: userData.password ?? "",
+				userId: user.uid
+			});
+		}
+	}, [user, userData]);
+
 
 	const fetchUserRatings = async () => {
 		const db = getFirestore();
@@ -66,7 +84,7 @@ export default function UserProfile() {
 			userRatings.push(ratingData);
 		});
 
-		const average = calculateAverageRating(userRatings);
+		const average = calculateAverageRating(userRatings.map(r => r.rating));
 		setAverageRating(average);
 	};
 
@@ -153,10 +171,7 @@ export default function UserProfile() {
 						{/* <Button title="Зачувај" onPress={() => {}} /> */}
 						<MyProductsButton onPress={openUserProducts} />
 
-						{/* TODO design the button for my ratings */}
-						<TouchableOpacity onPress={openUserRatings} style={styles.button}>
-							<Text style={styles.textBtn}>Мои оценки</Text>
-						</TouchableOpacity>
+						<MyRatingsButton onPress={openUserRatings} />
 
 						<Text style={styles.text}>Просечен рејтинг:</Text>
 						<StarRating rating={averageRating} isDisabled={true} />

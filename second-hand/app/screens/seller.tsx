@@ -18,7 +18,7 @@ export default function Seller() {
 	const router = useRouter();
 	const { seller: sellerString } = useLocalSearchParams();
 	const seller: IUser = sellerString ? JSON.parse(sellerString as string) : {};
-	const { userData } = useAuth();
+	const { userData, user } = useAuth();
 	const [averageRating, setAverageRating] = useState<number>(0);
 
 	const showListOfRatings = () => {
@@ -27,7 +27,6 @@ export default function Seller() {
 			params: { seller: JSON.stringify(seller) }
 		})
 	};
-
 
 	useEffect(() => {
 		if (!seller.userId) return;
@@ -82,7 +81,7 @@ export default function Seller() {
 						</View>
 					</View>
 				</ScrollView>
-				<RatingFooter {...seller} />
+				{user?.uid !== seller?.userId && <RatingFooter {...seller} />}
 			</ImageBackground>
 		</View>
 	);

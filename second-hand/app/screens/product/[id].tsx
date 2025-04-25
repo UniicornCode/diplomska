@@ -38,7 +38,6 @@ export default function Product() {
 			console.error("Error fetching uset data:", error)
 			return null;
 		}
-
 	};
 
 	useEffect(() => {

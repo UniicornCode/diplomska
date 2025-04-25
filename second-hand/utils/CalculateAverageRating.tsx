@@ -1,11 +1,6 @@
 export const calculateAverageRating = (ratings: any[]): number => {
-	let totalRating = 0;
-	let count = 0;
+	const average = ratings.length
+		? ratings.reduce((acc, curr) => acc + curr, 0) / ratings.length : 0;
 
-	ratings.forEach((rating) => {
-		totalRating += rating;
-		count += 1;
-	});
-
-	return count > 0 ? totalRating / count : 0;
+	return average;
 };

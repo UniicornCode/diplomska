@@ -32,7 +32,7 @@ export default function LeaveRatingScreen() {
 
 		const ratingData = {
 			userId: user.uid,
-			userName: userData?.name,
+			userName: userData?.name + " " + userData?.surname,
 			sellerId: seller.userId,
 			sellerName: seller.name,
 			rating,
