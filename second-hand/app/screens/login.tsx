@@ -8,7 +8,7 @@ import {
 	TextInput,
 } from "react-native";
 
-import { Text, View } from "@components/Themed";
+import { Text, View } from "react-native";
 import globalStyles from "@assets/css/globalStyles";
 import { useState } from "react";
 import SecondaryButton from "@components/buttons/SecondaryButton";

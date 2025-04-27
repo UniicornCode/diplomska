@@ -8,7 +8,7 @@ import {
 } from "react-native";
 
 import * as ImagePicker from "expo-image-picker";
-import { Text, View } from "@components/Themed";
+import { Text, View } from "react-native";
 import globalStyles from "@assets/css/globalStyles";
 import { useEffect, useState } from "react";
 import SecondaryButton from "@components/buttons/SecondaryButton";

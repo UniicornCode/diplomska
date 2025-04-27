@@ -1,5 +1,4 @@
-import { StyleSheet } from "react-native";
-import { View } from "@components/Themed";
+import { StyleSheet, View } from "react-native";
 import CreateEditProduct from "@screens/create-edit-product";
 import { useAuth } from "@services/context/AuthContext";
 import { useFocusEffect, useRouter } from "expo-router";

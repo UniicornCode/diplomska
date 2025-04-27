@@ -1,12 +1,9 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-
-import { useColorScheme } from '@/components/useColorScheme';
 import { AuthProvider } from '@services/context/AuthContext';
 import Navbar from '@/components/global/Navbar';
 
@@ -48,27 +45,23 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-	const colorScheme = useColorScheme();
-
 	return (
 		<AuthProvider>
-			<ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-				<Stack screenOptions={{ header: () => <Navbar /> }}>
-					<Stack.Screen name="(tabs)" />
-					<Stack.Screen name="screens/categories" />
-					<Stack.Screen name="screens/login" options={{ headerShown: false }} />
-					<Stack.Screen name="screens/register" options={{ headerShown: false }} />
-					<Stack.Screen name="screens/camera" />
-					<Stack.Screen name="screens/product" />
-					<Stack.Screen name="screens/list-of-products" />
-					<Stack.Screen name="screens/seller" />
-					<Stack.Screen name="screens/user-profile" />
-					<Stack.Screen name="screens/user-list-of-products" />
-					<Stack.Screen name="screens/list-of-ratings" />
-					<Stack.Screen name="screens/rating-form" />
-					<Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-				</Stack>
-			</ThemeProvider>
+			<Stack screenOptions={{ header: () => <Navbar /> }}>
+				<Stack.Screen name="(tabs)" />
+				<Stack.Screen name="screens/login" options={{ headerShown: false }} />
+				<Stack.Screen name="screens/register" options={{ headerShown: false }} />
+				<Stack.Screen name="screens/user-profile" />
+				<Stack.Screen name="screens/user-list-of-products" />
+				<Stack.Screen name="screens/categories" />
+				<Stack.Screen name="screens/list-of-products" />
+				<Stack.Screen name="screens/product" />
+				<Stack.Screen name="screens/camera" />
+				<Stack.Screen name="screens/seller" />
+				<Stack.Screen name="screens/list-of-ratings" />
+				<Stack.Screen name="screens/rating-form" />
+				<Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+			</Stack>
 		</AuthProvider>
 	);
 }

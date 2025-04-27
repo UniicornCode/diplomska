@@ -1,6 +1,4 @@
-import { ImageBackground, StyleSheet } from 'react-native';
-
-import { Text, View } from '@/components/Themed';
+import { ImageBackground, StyleSheet,Text, View } from 'react-native';
 import { IProduct } from '@interfaces/types';
 import { useRoute } from '@react-navigation/native';
 import PrimaryButton from '@/components/buttons/PrimaryButton';

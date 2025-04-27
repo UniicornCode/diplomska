@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, StatusBar, SafeAreaView } from "react-native";
-import { View } from "@components/Themed";
+import React from "react";
+import { Image, StyleSheet, View, TouchableOpacity, StatusBar, SafeAreaView } from "react-native";
 import globalStyles from "@assets/css/globalStyles";
 import { useRouter } from "expo-router";
 import { useAuth } from "@services/context/AuthContext";
