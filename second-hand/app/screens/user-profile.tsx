@@ -18,18 +18,19 @@ import { useAuth } from "@services/context/AuthContext";
 import { getAuth, deleteUser } from "firebase/auth";
 import { getFirestore, doc, deleteDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import DeleteProfileModal from "@/components/custom/DeleteProfileModal";
-import SecondaryButton from "@/components/buttons/SecondaryButton";
-import Colors from "@/constants/Colors";
+import DeleteProfileModal from "@components/custom/DeleteProfileModal";
+import SecondaryButton from "@components/buttons/SecondaryButton";
+import Colors from "@constants/Colors";
 import { calculateAverageRating } from "@/utils/CalculateAverageRating";
-import MyRatingsButton from "@/components/buttons/MyRatingsButton";
-import { IUser } from "@/interfaces/types";
+import MyRatingsButton from "@components/buttons/MyRatingsButton";
+import { IUser } from "@interfaces/types";
+import RatingService from "@services/ratingService";
 
 export default function UserProfile() {
 	const router = useRouter();
 	const { signOut } = useAuth();
 	const { userData, user } = useAuth();
-	const [seller, setSeller] = useState<IUser | null>(null);
+	const [seller, setSeller] = useState<IUser | null>(null); // Send user data as seller for ratings view
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [averageRating, setAverageRating] = useState<number>(0);
 
@@ -43,7 +44,7 @@ export default function UserProfile() {
 
 	const openUserRatings = () => {
 		router.push({
-			pathname: "/screens/rating/list-of-ratings",
+			pathname: "/screens/list-of-ratings",
 			params: { seller: JSON.stringify(seller) }
 		});
 	};
@@ -55,42 +56,13 @@ export default function UserProfile() {
 		});
 	};
 
-	useEffect(() => {
-		if (user && userData) {
-			setSeller({
-				selectedImage: userData.selectedImage ?? "",
-				name: userData.name ?? "",
-				surname: userData.surname ?? "",
-				email: userData.email ?? "",
-				address: userData.address ?? { latitude: "", longitude: "" },
-				phone: userData.phone ?? "",
-				password: userData.password ?? "",
-				userId: user.uid
-			});
-		}
-	}, [user, userData]);
+	const laoadUserRatings = async () => {
+		if (!user) return;
 
-
-	const fetchUserRatings = async () => {
-		const db = getFirestore();
-		const ratingsRef = collection(db, "ratings");
-		const q = query(ratingsRef, where("userId", "==", user?.uid));
-		const querySnapshot = await getDocs(q);
-
-		const userRatings: any[] = [];
-
-		querySnapshot.forEach((doc) => {
-			const ratingData = doc.data();
-			userRatings.push(ratingData);
-		});
-
-		const average = calculateAverageRating(userRatings.map(r => r.rating));
+		const ratings = await RatingService.fetchRatingsForUser(user.uid);
+		const average = calculateAverageRating(ratings.map(r => r.rating));
 		setAverageRating(average);
 	};
-
-	useEffect(() => {
-		fetchUserRatings();
-	}, []);
 
 	const deleteUserAccount = async () => {
 		try {
@@ -125,6 +97,25 @@ export default function UserProfile() {
 			console.error("Error deleting account:", error.message);
 		}
 	};
+
+	useEffect(() => {
+		laoadUserRatings();
+	}, []);
+
+	useEffect(() => {
+		if (user && userData) {
+			setSeller({
+				selectedImage: userData.selectedImage ?? "",
+				name: userData.name ?? "",
+				surname: userData.surname ?? "",
+				email: userData.email ?? "",
+				address: userData.address ?? { latitude: "", longitude: "" },
+				phone: userData.phone ?? "",
+				password: userData.password ?? "",
+				userId: user.uid
+			});
+		}
+	}, [user, userData]);
 
 	return (
 		<KeyboardAvoidingView

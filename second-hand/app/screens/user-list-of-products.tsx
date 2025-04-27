@@ -6,9 +6,7 @@ import React, { useState } from "react";
 import { getFirestore, collection, query, where, getDocs, doc } from "firebase/firestore";
 import { IProduct, IRegister } from "@interfaces/types";
 import { useAuth } from "@services/context/AuthContext";
-
-// @ts-ignore
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useFocusEffect } from "expo-router";
 import Colors from "@/constants/Colors";
 
 export default function UserListOfProducts() {

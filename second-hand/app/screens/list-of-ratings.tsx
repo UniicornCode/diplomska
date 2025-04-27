@@ -10,47 +10,23 @@ import Colors from "@/constants/Colors";
 import { useAuth } from "@/app/services/context/AuthContext";
 import DeleteRatingsModal from "@/components/custom/DeleteRatingModal";
 import { Icon } from "@rneui/themed";
+import RatingService from "@/app/services/ratingService";
 
 export default function RatingList() {
 	const { seller: sellerString } = useLocalSearchParams();
 	const seller: IUser = sellerString ? JSON.parse(sellerString as string) : {};
 	const [ratings, setRatings] = useState<IRating[]>([]);
 	const { user } = useAuth();
-	const [isModalVisible, setModalVisible] = useState(false); // Modal visibility state
-	const [ratingToDelete, setRatingToDelete] = useState<string | null>(null); // Store the rating id to delete
-
-
-	useEffect(() => {
-		const fetchRatings = async () => {
-			try {
-				const db = getFirestore();
-				const q = query(collection(db, "ratings"), where("sellerId", "==", seller.userId));
-				const querySnapshot = await getDocs(q);
-				const results: IRating[] = [];
-
-				querySnapshot.forEach((doc) => {
-					results.push({ id: doc.id, ...doc.data() } as IRating);
-				});
-
-				setRatings(results);
-			} catch (error) {
-				console.error("Грешка при превземање на оценки:", error);
-			}
-		};
-
-		fetchRatings();
-	}, [seller.userId]);
+	const [isModalVisible, setModalVisible] = useState(false);
+	const [ratingToDelete, setRatingToDelete] = useState<string | null>(null);
 
 	const handleDeleteRating = async (ratingId: string) => {
 		try {
-			const db = getFirestore();
-			const ratingRef = doc(db, "ratings", ratingId);
-			await deleteDoc(ratingRef); // Deletes the rating from Firestore
-			setRatings((prevRatings) => prevRatings.filter((rating) => rating.id !== ratingId)); // Removes the rating from the state
-			setModalVisible(false); // Close the modal
+			await RatingService.deleteRating(ratingId);
+			setRatings(prevRatings => prevRatings.filter((rating) => rating.id !== ratingId)); // Remove rating from state
+			setModalVisible(false);
 			Alert.alert("Успешно", "Оценката е успешно избришана.");
 		} catch (error) {
-			console.error("Error deleting rating:", error);
 			Alert.alert("Грешка", "Неуспешно бришење на оценка.");
 		}
 	};
@@ -58,14 +34,27 @@ export default function RatingList() {
 	// Function to show the modal for confirmation
 	const showDeleteModal = (ratingId: string) => {
 		setRatingToDelete(ratingId);
-		setModalVisible(true); // Show the modal
+		setModalVisible(true);
 	};
 
 	// Function to hide the modal
 	const hideDeleteModal = () => {
 		setModalVisible(false);
-		setRatingToDelete(null); // Reset the rating to delete
+		setRatingToDelete(null);
 	};
+
+	useEffect(() => {
+		const loadRatings = async () => {
+			try {
+				const results = await RatingService.fetchRatingsForSeller(seller.userId);
+				setRatings(results);
+			} catch (error) {
+				console.error("Грешка при превземање на оценки:", error);
+			}
+		};
+
+		loadRatings();
+	}, [seller.userId]);
 
 	return (
 		<View style={globalStyles.background_transparent}>

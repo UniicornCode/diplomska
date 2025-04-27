@@ -59,11 +59,13 @@ function RootLayoutNav() {
 					<Stack.Screen name="screens/login" options={{ headerShown: false }} />
 					<Stack.Screen name="screens/register" options={{ headerShown: false }} />
 					<Stack.Screen name="screens/camera" />
-					<Stack.Screen name="screens/product/[id]" />
-					<Stack.Screen name="screens/seller" />
+					<Stack.Screen name="screens/product" />
 					<Stack.Screen name="screens/list-of-products" />
-					<Stack.Screen name="screens/user-list-of-products" />
+					<Stack.Screen name="screens/seller" />
 					<Stack.Screen name="screens/user-profile" />
+					<Stack.Screen name="screens/user-list-of-products" />
+					<Stack.Screen name="screens/list-of-ratings" />
+					<Stack.Screen name="screens/rating-form" />
 					<Stack.Screen name="modal" options={{ presentation: 'modal' }} />
 				</Stack>
 			</ThemeProvider>

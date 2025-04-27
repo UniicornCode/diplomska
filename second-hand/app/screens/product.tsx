@@ -18,6 +18,7 @@ import { getFirestore, doc, getDoc } from "firebase/firestore";
 export default function Product() {
 	const { product: productString } = useLocalSearchParams();
 	const product: IProduct = productString ? JSON.parse(productString as string) : {};
+	const { user } = useAuth();
 	const [seller, setSeller] = useState<IUser>();
 
 	const fetchUserData = async (userId: string): Promise<IUser | null> => {
@@ -51,8 +52,6 @@ export default function Product() {
 		};
 		effect();
 	}, [product]);
-
-	const { user } = useAuth();
 
 	return (
 		<View style={globalStyles.background_transparent}>

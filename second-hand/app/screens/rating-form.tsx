@@ -4,18 +4,16 @@ import BackButton from "@components/buttons/BackButton";
 import StarRating from "@components/custom/StarRating";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { db } from "@/app/firebase";
 import { useAuth } from "@services/context/AuthContext";
 import { IUser } from "@/interfaces/types";
 import SecondaryButton from "@/components/buttons/SecondaryButton";
+import RatingService from "@/app/services/ratingService";
 
-export default function LeaveRatingScreen() {
+export default function RatingFormScreen() {
 	const { seller: sellerString } = useLocalSearchParams();
 	const seller: IUser = sellerString ? JSON.parse(sellerString as string) : {};
 	const { user, userData } = useAuth();
 	const router = useRouter();
-
 	const [rating, setRating] = useState(0);
 	const [comment, setComment] = useState("");
 
@@ -37,15 +35,13 @@ export default function LeaveRatingScreen() {
 			sellerName: seller.name,
 			rating,
 			comment,
-			createdAt: serverTimestamp(),
-		};
+		}
 
 		try {
-			await addDoc(collection(db, "ratings"), ratingData);
+			await RatingService.addRating(ratingData);
 			Alert.alert("Успешно", "Вашата оценка е зачувана.");
 			router.back();
 		} catch (error) {
-			console.error("Error saving rating:", error);
 			Alert.alert("Грешка", "Неуспешно зачувување на оценка.");
 		}
 	};

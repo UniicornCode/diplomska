@@ -77,12 +77,14 @@ export type ValidRoutes =
 	| "/screens/categories"
 	| "/screens/camera"
 	| "/screens/create-edit-product"
+	| "/screens/product"
 	| "/screens/list-of-products"
 	| "/screens/login"
-	| "/screens/product/[id]"
 	| "/screens/register"
 	| "/screens/seller"
 	| "/screens/user-list-of-products"
-	| "/screens/user-profile";
+	| "/screens/user-profile"
+	| "/screens/list-of-ratings"
+	| "/screens/rating-form";
 
 export type CapturedImage = string | null;

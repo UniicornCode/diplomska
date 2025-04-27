@@ -1,4 +1,4 @@
-export default function calculatDistanceBetweenUsers(lat1: number, lon1: number, lat2: number, lon2: number) {
+export function calculatDistanceBetweenUsers(lat1: number, lon1: number, lat2: number, lon2: number) {
 	const R = 6371; // Earth's radius in kilometers
 
 	// Convert degrees to radians

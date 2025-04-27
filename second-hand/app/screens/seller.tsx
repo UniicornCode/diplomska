@@ -7,11 +7,10 @@ import SecondaryButton from "@components/buttons/SecondaryButton";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAuth } from "@services/context/AuthContext";
 import { IUser } from "@interfaces/types";
-import calculatDistanceBetweenUsers from "@/utils/CalculateDistanceBetweenUsers";
+import { calculatDistanceBetweenUsers } from "@/utils/CalculateDistanceBetweenUsers";
 import { useEffect, useState } from "react";
-import { collection, onSnapshot, query, where } from "firebase/firestore";
-import { db } from "@app/firebase";
 import { calculateAverageRating } from "@/utils/CalculateAverageRating";
+import RatingService from "../services/ratingService";
 
 
 export default function Seller() {
@@ -23,7 +22,7 @@ export default function Seller() {
 
 	const showListOfRatings = () => {
 		router.push({
-			pathname: "/screens/rating/list-of-ratings",
+			pathname: "/screens/list-of-ratings",
 			params: { seller: JSON.stringify(seller) }
 		})
 	};
@@ -31,16 +30,10 @@ export default function Seller() {
 	useEffect(() => {
 		if (!seller.userId) return;
 
-		const q = query(
-			collection(db, "ratings"),
-			where("sellerId", "==", seller.userId)
-		);
-
-		const unsubscribe = onSnapshot(q, (snapshot) => {
-			const ratings = snapshot.docs.map(doc => doc.data().rating);
+		const unsubscribe = RatingService.listenToSellerRatings(seller.userId, (ratings) => {
 			const avg = calculateAverageRating(ratings);
 			setAverageRating(avg);
-		});
+		})
 
 		return () => unsubscribe();
 	}, [seller.userId]);
