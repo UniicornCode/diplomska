@@ -13,8 +13,8 @@ export default function UserProductCard(product: IProduct) {
 	const openProductDetails = () => {
 		if (product.id) {
 			router.push({
-				pathname: "/screens/product/[id]",
-				params: { id: product.id, product: JSON.stringify(product) }
+				pathname: "/screens/product",
+				params: { product: JSON.stringify(product) }
 			});
 		}
 	};

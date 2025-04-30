@@ -1,17 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { createUserWithEmailAndPassword } from "@firebase/auth";
 import {
-	getAuth,
 	onAuthStateChanged,
 	signInWithEmailAndPassword,
 	signOut as signOutOfFirebase,
 	User,
 } from "firebase/auth";
 import { ILogin, IRegister } from "@interfaces/types";
-import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, setDoc, onSnapshot } from "firebase/firestore";
-import { auth, db, storage } from "@app/firebase";
-import * as FileSystem from "expo-file-system";
+import { auth, db } from "@app/firebase";
 
 interface AuthContextType {
 	user: User | null;
@@ -31,45 +28,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const [user, setUser] = useState<User | null>(null);
 	const [userData, setUserData] = useState<Partial<IRegister> | null>(null);
 
-	useEffect(() => {
-		const unsubscribe = onAuthStateChanged(auth, setUser); // Refactored for Firebase v9
-		return unsubscribe; // the function returned by onAuthStateChanged is the unsubscribe function
-	}, [auth]);
-
-	useEffect(() => {
-		return onAuthStateChanged(auth, setUser);
-	}, []);
-
 	const signIn = async ({ email, password }: ILogin) => {
-		await signInWithEmailAndPassword(auth, email, password); // Refactored for Firebase v9
+		await signInWithEmailAndPassword(auth, email, password);
 	};
 
 	const signOut = async () => {
-		await signOutOfFirebase(auth); // Refactored for Firebase v9
-	};
-
-	const uploadImageAndGetURL = async (uri: string, uid: string) => {
-		try {
-			console.log("Original Image URI:", uri);
-
-			// Read file as Base64
-			const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
-
-			// Convert Base64 to a Blob
-			const byteCharacters = atob(base64);
-			const byteNumbers = new Array(byteCharacters.length).fill(null).map((_, i) => byteCharacters.charCodeAt(i));
-			const byteArray = new Uint8Array(byteNumbers);
-			const blob = new Blob([byteArray], { type: "image/jpeg" });
-
-			const imageRef = storageRef(storage, `profileImages/${uid}`);
-			await uploadBytes(imageRef, blob);
-			const downloadURL = await getDownloadURL(imageRef);
-
-			return downloadURL;
-		} catch (error) {
-			console.error("Error in uploadImageAndGetURL:", error);
-			throw error;
-		}
+		await signOutOfFirebase(auth);
 	};
 
 	const signUp = async (data: IRegister) => {
@@ -82,9 +46,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				throw new Error("Failed to get UID after registration.");
 			}
 
-			// const profileImageUrl = await uploadImageAndGetURL(additionalData.selectedImage, uid);
-			// additionalData.selectedImage = profileImageUrl;
-
 			await setDoc(doc(db, "users", uid), {
 				...additionalData, // Save all additional user data
 				createdAt: new Date().toISOString(), // Optional: Store account creation timestamp
@@ -94,6 +55,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			throw error; // Propagate the error so it can be caught outside.
 		}
 	};
+
+	useEffect(() => {
+		const unsubscribe = onAuthStateChanged(auth, setUser);
+		return unsubscribe; // the function returned by onAuthStateChanged is the unsubscribe function
+	}, [auth]);
+
+	useEffect(() => {
+		return onAuthStateChanged(auth, setUser);
+	}, []);
 
 	useEffect(() => {
 		if (user && user.uid) {

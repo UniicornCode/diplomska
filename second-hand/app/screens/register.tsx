@@ -95,7 +95,7 @@ export default function RegisterScreen() {
 			if (!pickerResult.canceled) {
 				const pickedUri = pickerResult.assets[0].uri;
 				const compressedBase64 = await compressAndConvertToBase64(pickedUri);
-				changeHandler("image", compressedBase64);
+				changeHandler("selectedImage", compressedBase64);
 			}
 
 			setIsModalVisible(false);

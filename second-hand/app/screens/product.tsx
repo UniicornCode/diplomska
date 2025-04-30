@@ -13,17 +13,17 @@ import { IProduct, IRegister, IUser } from "@interfaces/types";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "@services/context/AuthContext";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@app/firebase"
 
 export default function Product() {
 	const { product: productString } = useLocalSearchParams();
-	const product: IProduct = productString ? JSON.parse(productString as string) : {};
+	const product: IProduct = productString ? JSON.parse(productString as string) : null;
 	const { user } = useAuth();
 	const [seller, setSeller] = useState<IUser>();
 
-	const fetchUserData = async (userId: string): Promise<IUser | null> => {
+	const fetchSellerData = async (userId: string): Promise<IUser | null> => {
 		try {
-			const db = getFirestore();
 			const userRef = doc(db, "users", userId);
 			const snapshot = await getDoc(userRef);
 
@@ -36,7 +36,7 @@ export default function Product() {
 				return null;
 			}
 		} catch (error) {
-			console.error("Error fetching uset data:", error)
+			console.error("Error fetching user data:", error)
 			return null;
 		}
 	};
@@ -44,7 +44,7 @@ export default function Product() {
 	useEffect(() => {
 		const effect = async () => {
 			if (product.userId) {
-				const userData = await fetchUserData(product.userId);
+				const userData = await fetchSellerData(product.userId);
 				if (userData) {
 					setSeller(userData);
 				}
@@ -55,7 +55,6 @@ export default function Product() {
 
 	return (
 		<View style={globalStyles.background_transparent}>
-			{/*TODO if there is a user logged in, get the userId*/}
 			<ImageBackground source={require("@assets/images/background.png")} style={globalStyles.background}>
 				<ScrollView>
 					<BackButton title={"Назад"} />
@@ -82,6 +81,11 @@ export default function Product() {
 									<Text style={styles.title} numberOfLines={1}>Продавач</Text>
 									<Text style={styles.value} numberOfLines={2} ellipsizeMode="tail">{seller?.name}</Text>
 								</View>
+
+								<View style={styles.row}>
+									<Text style={styles.title} numberOfLines={1}>Боја</Text>
+									<Text style={[styles.color, {backgroundColor: product.color}]} numberOfLines={1} ellipsizeMode="tail"></Text>
+								</View>
 							</View>
 						</View>
 						<View style={styles.price}>
@@ -90,7 +94,7 @@ export default function Product() {
 					</View>
 				</ScrollView>
 			</ImageBackground>
-			{user && seller && <ContactFooter {...seller} />}
+			{user?.uid !== seller?.userId && <ContactFooter {...seller} />}
 		</View>
 	);
 }
@@ -127,5 +131,11 @@ const styles = StyleSheet.create({
 	info_container: {
 		width: "90%",
 		marginVertical: 20
+	},
+	color: {
+		width: 50,
+		height: 20,
+		alignSelf: "center",
+		flex: 1
 	}
 });

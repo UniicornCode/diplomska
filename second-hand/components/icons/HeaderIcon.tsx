@@ -1,6 +1,5 @@
 import React from "react";
-import { Image, SafeAreaView, StatusBar, StyleSheet } from "react-native";
-import { View } from "@components/Themed";
+import { Image, SafeAreaView, StatusBar, StyleSheet, View } from "react-native";
 import globalStyles from "@assets/css/globalStyles";
 
 export default function HeaderIcon({ source }: { source: any }) {

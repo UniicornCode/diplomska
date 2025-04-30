@@ -8,7 +8,6 @@ import {
 	Modal,
 	Button
 } from "react-native";
-// @ts-ignore
 import { Icon } from '@rneui/themed';
 import globalStyles from "@assets/css/globalStyles";
 import MapScreen from "@components/custom/MapScreen";

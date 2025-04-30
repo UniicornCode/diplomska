@@ -60,7 +60,6 @@ function RootLayoutNav() {
 				<Stack.Screen name="screens/seller" />
 				<Stack.Screen name="screens/list-of-ratings" />
 				<Stack.Screen name="screens/rating-form" />
-				<Stack.Screen name="modal" options={{ presentation: 'modal' }} />
 			</Stack>
 		</AuthProvider>
 	);

@@ -165,11 +165,9 @@ export default function CreateEditProduct() {
 			const newProduct = { ...data, userId: user.uid };
 
 			if (data.id) {
-				// EDIT mode
 				await setDoc(doc(db, "products", data.id), newProduct);
 				alert("Успешно променет производ");
 			} else {
-				// CREATE mode
 				await addDoc(collection(db, "products"), newProduct);
 				alert("Успешно додаден производ");
 			}
@@ -195,7 +193,7 @@ export default function CreateEditProduct() {
 					<BackButton title={"Назад"} />
 					<PhotoSourceModal isVisible={isModalVisible} handleChoice={handleModalSelection} />
 					<View style={globalStyles.container}>
-						<Text style={globalStyles.title}>Додади производ</Text>
+						<Text style={globalStyles.title}>{data.id ? "Измени производ" : "Додади производ"}</Text>
 
 						<ImageInput onPress={handleImagePress} imageUri={data.image} />
 
