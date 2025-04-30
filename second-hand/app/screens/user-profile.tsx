@@ -57,7 +57,6 @@ export default function UserProfile() {
 
 		const ratings = await RatingService.fetchRatingsForUser(user.uid);
 		const average = calculateAverageRating(ratings.map(r => r.rating));
-		console.log(average)
 		setAverageRating(average);
 	};
 

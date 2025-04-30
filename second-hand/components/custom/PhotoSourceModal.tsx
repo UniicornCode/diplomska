@@ -10,7 +10,7 @@ export interface PhotoSourceModalProps {
 export default function PhotoSourceModal({ isVisible, handleChoice }: PhotoSourceModalProps) {
 
 	return (
-		<Modal visible={isVisible} transparent animationType="slide">
+		<Modal visible={isVisible} transparent animationType="fade">
 			<View style={styles.modalContainer}>
 				<View style={styles.modalContent}>
 					<TouchableOpacity onPress={() => handleChoice('camera')}>

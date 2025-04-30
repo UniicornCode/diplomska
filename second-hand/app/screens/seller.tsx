@@ -74,7 +74,8 @@ export default function Seller() {
 						</View>
 					</View>
 				</ScrollView>
-				{user?.uid !== seller?.userId && seller && <RatingFooter {...seller} />}
+				{/* Check if the user that is logged in is not the seller of this product, and the user and seller exist and then show the RatingFooter  */}
+				{user && user?.uid !== seller?.userId && seller && <RatingFooter {...seller} />}
 			</ImageBackground>
 		</View>
 	);

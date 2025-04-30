@@ -74,8 +74,8 @@ export default function Product() {
 					</View>
 				</ScrollView>
 			</ImageBackground>
-			{/* Check if the user that is logged in is not the seller of this product, an the seller exists and then show the ContactFooter  */}
-			{user?.uid !== seller?.userId && seller && <ContactFooter seller={seller} />}
+			{/* Check if the user that is logged in is not the seller of this product, and the user and seller exist and then show the ContactFooter  */}
+			{user && user?.uid !== seller?.userId && seller && <ContactFooter seller={seller} />}
 		</View>
 	);
 }
