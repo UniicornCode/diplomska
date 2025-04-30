@@ -8,7 +8,6 @@ interface IProps {
 }
 
 export default function CategoryButton({ title, onPress }: IProps) {
-
 	return (
 		<TouchableOpacity style={[globalStyles.category_button, globalStyles.shadow]} onPress={onPress}>
 			<Text style={[globalStyles.text_blue, styles.title]}>{title}</Text>

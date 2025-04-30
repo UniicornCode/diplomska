@@ -5,15 +5,15 @@ import globalStyles from "@assets/css/globalStyles";
 interface IProps {
 	title: string;
 	onPress: () => void;
-	background?: string
+	backgroundColor?: string
 }
 
-export default function SecondaryButton({ title, onPress, background }: IProps) {
+export default function SecondaryButton({ title, onPress, backgroundColor }: IProps) {
 	return (
 		<TouchableOpacity style={[
 			globalStyles.secondary_button,
 			globalStyles.shadow,
-			background ? { backgroundColor: background } : null]} onPress={onPress}>
+			backgroundColor ? { backgroundColor: backgroundColor } : null]} onPress={onPress}>
 			<Text style={[styles.buttonText, globalStyles.text_white]}>{title}</Text>
 		</TouchableOpacity>
 	);

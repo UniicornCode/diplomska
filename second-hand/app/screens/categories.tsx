@@ -24,18 +24,18 @@ export default function Categories() {
 		})
 	};
 
+	// Modify categories container height depending if the user is logged in or not
 	const windowHeight = Dimensions.get("window").height;
 	const desiredHeight = user ? windowHeight * 0.6 : windowHeight * 0.55;
 
 	return (
 		<View style={globalStyles.background_transparent}>
 			<ImageBackground source={require("@assets/images/background.png")} style={globalStyles.background}>
-				{!user && (
-					<BackButton title={"Назад"} />
-				)}
+				{/* Show back button when user is not logged in and is reviewing categories in order to be able to go back to the homepage */}
+				{!user && <BackButton title={"Назад"} />}
 				<View style={[globalStyles.container, globalStyles.shadow]}>
 					<Text style={globalStyles.title}>Категории</Text>
-					<ScrollView horizontal={false} showsVerticalScrollIndicator={true} style={!user ? { height: desiredHeight } : null}>
+					<ScrollView style={!user ? { height: desiredHeight } : null}>
 						{Products.categories.map((category) => (
 							<CategoryButton key={category} title={category} onPress={() => handleNavigation(category)} />
 						))}
@@ -45,18 +45,3 @@ export default function Categories() {
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-	arrow: {
-		alignSelf: "center",
-		height: 70,
-		width: 70,
-		marginTop: 8,
-	},
-	categoriesContainer: {
-		marginVertical: 30,
-		paddingVertical: 30,
-		marginHorizontal: 35,
-		borderRadius: 25,
-	},
-});

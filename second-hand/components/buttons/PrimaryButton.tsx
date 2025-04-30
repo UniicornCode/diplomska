@@ -15,6 +15,7 @@ export default function PrimaryButton({ title, screen }: IProps) {
 	const handleNavigation = () => {
 		router.push(screen)
 	};
+	
 	return (
 		<TouchableOpacity
 			style={[globalStyles.primary_button, globalStyles.shadow]}

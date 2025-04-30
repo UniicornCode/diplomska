@@ -1,25 +1,20 @@
-import { ImageBackground, StyleSheet,Text, View } from 'react-native';
-import { IProduct } from '@interfaces/types';
+import { ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { ValidRoutes } from '@interfaces/types';
 import { useRoute } from '@react-navigation/native';
 import PrimaryButton from '@/components/buttons/PrimaryButton';
 import globalStyles from '@/assets/css/globalStyles';
 import { useAuth } from '@services/context/AuthContext';
 import Categories from '@screens/categories';
 
-interface IType {
-	screen: string;
-	id: string;
-	product?: IProduct;
-}
-
 export default function IndexScreen() {
 	const route = useRoute();
-	const params = route.params as IType;
-
+	const { screen } = (route.params || {}) as { screen?: ValidRoutes };
 	const { user } = useAuth();
-	if (user || params?.screen === "/screens/categories") {
+
+	if (user || screen === "/screens/categories") {
 		return <Categories />;
 	}
+
 	return (
 		<ImageBackground source={require("@assets/images/background.png")} style={globalStyles.background}>
 			<View style={styles.container}>
