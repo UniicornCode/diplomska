@@ -1,4 +1,5 @@
 import {
+	Alert,
 	ImageBackground,
 	KeyboardAvoidingView, Modal,
 	Platform,
@@ -19,11 +20,12 @@ import { IProduct } from "@interfaces/types";
 import Products from "@/constants/Products";
 import { Picker } from "@react-native-picker/picker";
 import ColorPicker from "react-native-wheel-color-picker";
-import { useAuth } from "@services/context/AuthContext";
-import { getFirestore, collection, addDoc, doc, getDoc, setDoc } from "firebase/firestore";
+import { useAuth } from "@/services/context/AuthContext";
 import PhotoSourceModal from "@/components/custom/PhotoSourceModal";
 import CameraScreen from "@screens/camera";
 import { compressAndConvertToBase64 } from "@/utils/CompressImage";
+import userService from "@services/userService";
+import productService from "@services/productService";
 
 const initialState = {
 	category: "Блузи",
@@ -39,49 +41,15 @@ const initialState = {
 };
 
 export default function CreateEditProduct() {
-	const [data, setData] = useState<IProduct>({ ...initialState });
+	const [product, setProduct] = useState<IProduct>({ ...initialState });
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [isCameraVisible, setIsCameraVisible] = useState(false);
 	const router = useRouter();
 	const { user } = useAuth();
 	const params = useLocalSearchParams();
 
-	useEffect(() => {
-		if (params.product) {
-			const existingProduct = JSON.parse(params.product as string) as IProduct;
-			setData(existingProduct);
-		}
-	}, [params.product]);
-
-	useEffect(() => {
-		const fetchUserAddress = async () => {
-			if (!user) return;
-
-			if (!params.product) {
-				try {
-					const db = getFirestore();
-					const userDoc = await getDoc(doc(db, "users", user.uid));
-
-					if (userDoc.exists()) {
-						const userData = userDoc.data();
-						if (userData.address) {
-							setData((prev) => ({
-								...prev,
-								address: userData.address,
-							}));
-						}
-					}
-				} catch (error) {
-					console.error("Error fetching user address:", error);
-				}
-			}
-		};
-
-		fetchUserAddress();
-	}, [user, params.product]);
-
 	const changeHandler = (name: string, value: string) => {
-		setData((prev) => ({ ...prev, [name]: value }));
+		setProduct((prev) => ({ ...prev, [name]: value }));
 	};
 
 	// Functions to handle input changes
@@ -130,52 +98,33 @@ export default function CreateEditProduct() {
 	};
 
 	const handleSubmit = async () => {
-		if (!data.image) {
-			alert("Ве молиме изберете слика!");
-			return;
-		}
-
-		if (!data.category) {
-			alert("Ве молиме внесете категорија!");
-			return;
-		}
-
-		if (!data.color) {
-			alert("Ве молиме внесете боја!");
-			return;
-		}
-
-		if (!data.price) {
-			alert("Ве молиме внесете цена!");
-			return;
-		}
-
-		if (!data.size) {
-			alert("Ве молиме внесете големина!");
-			return;
-		}
-
 		if (!user) {
-			alert("User not logged in");
+			Alert.alert("Грешка", "Корисникот не е најавен");
+			return;
+		}
+
+		if (!product.image) {
+			Alert.alert("Некомплетен производ", "Ве молиме изберете слика!");
+			return;
+		}
+
+		if (!product.brand) {
+			Alert.alert("Некомплетен производ", "Ве молиме внесете бренд!");
+			return;
+		}
+
+		if (!product.price) {
+			Alert.alert("Некомплетен производ", "Ве молиме внесете цена!");
 			return;
 		}
 
 		try {
-			const db = getFirestore();
-			const newProduct = { ...data, userId: user.uid };
-
-			if (data.id) {
-				await setDoc(doc(db, "products", data.id), newProduct);
-				alert("Успешно променет производ");
-			} else {
-				await addDoc(collection(db, "products"), newProduct);
-				alert("Успешно додаден производ");
-			}
+			await productService.addNewProduct(product, user.uid);
 
 			router.replace({
 				pathname: "/screens/list-of-products",
 				params: {
-					category: newProduct.category,
+					category: product.category,
 					navigatedFromCreatedProduct: "true"
 				}
 			})
@@ -183,6 +132,29 @@ export default function CreateEditProduct() {
 			alert(error.message);
 		}
 	};
+
+	useEffect(() => {
+		if (params.product) {
+			const existingProduct = JSON.parse(params.product as string) as IProduct;
+			setProduct(existingProduct);
+		}
+	}, [params.product]);
+
+	useEffect(() => {
+		if (!user) return;
+
+		const effect = async () => {
+			const address = await userService.fetchUserAddress(user.uid);
+			if (address) {
+				setProduct((prev) => ({
+					...prev,
+					address: address,
+				}));
+			}
+		}
+
+		effect();
+	}, [user, params.product]);
 
 	return (
 		<KeyboardAvoidingView
@@ -193,13 +165,13 @@ export default function CreateEditProduct() {
 					<BackButton title={"Назад"} />
 					<PhotoSourceModal isVisible={isModalVisible} handleChoice={handleModalSelection} />
 					<View style={globalStyles.container}>
-						<Text style={globalStyles.title}>{data.id ? "Измени производ" : "Додади производ"}</Text>
+						<Text style={globalStyles.title}>{product.id ? "Измени производ" : "Додади производ"}</Text>
 
-						<ImageInput onPress={handleImagePress} imageUri={data.image} />
+						<ImageInput onPress={handleImagePress} imageUri={product.image} />
 
 						<Text style={styles.title}>Категорија</Text>
 						<Picker
-							selectedValue={data.category}
+							selectedValue={product.category}
 							style={globalStyles.picker}
 							onValueChange={changeHandler.bind(null, "category")}>
 							{Products.categories.map((category) => (
@@ -209,7 +181,7 @@ export default function CreateEditProduct() {
 
 						<Text style={styles.title}>Големина</Text>
 						<Picker
-							selectedValue={data.size}
+							selectedValue={product.size}
 							style={globalStyles.picker}
 							onValueChange={changeHandler.bind(null, "size")}>
 							{Products.sizes.map((size) => (
@@ -220,14 +192,14 @@ export default function CreateEditProduct() {
 						<TextInput
 							style={globalStyles.input_field}
 							placeholder="Бренд"
-							value={data.brand}
+							value={product.brand}
 							onChangeText={changeHandler.bind(null, "brand")}
 						/>
 
-						{data.color &&
+						{product.color &&
 							<View style={styles.colorContainer}>
 								<ColorPicker
-									color={data.color}
+									color={product.color}
 									onColorChange={(color) => changeHandler("color", color)}
 									thumbSize={10}
 									sliderSize={10}
@@ -248,17 +220,17 @@ export default function CreateEditProduct() {
 								marginVertical: 5
 							}}>
 							<Text>Боја: </Text>
-							<View style={{ height: 20, backgroundColor: data.color, width: 50 }} />
+							<View style={{ height: 20, backgroundColor: product.color, width: 50 }} />
 						</View>
 
 						<TextInput
 							style={globalStyles.input_field}
 							placeholder="Цена"
-							value={data.price}
+							value={product.price}
 							keyboardType="numeric"
 							onChangeText={changeHandler.bind(null, "price")}
 						/>
-						<SecondaryButton title={data.id ? "Измени" : "Додади"} onPress={handleSubmit} />
+						<SecondaryButton title={product.id ? "Измени" : "Додади"} onPress={handleSubmit} />
 
 						<Modal
 							visible={isCameraVisible}

@@ -3,7 +3,7 @@ import { ValidRoutes } from '@interfaces/types';
 import { useRoute } from '@react-navigation/native';
 import PrimaryButton from '@/components/buttons/PrimaryButton';
 import globalStyles from '@/assets/css/globalStyles';
-import { useAuth } from '@services/context/AuthContext';
+import { useAuth } from '@/services/context/AuthContext';
 import Categories from '@screens/categories';
 
 export default function IndexScreen() {

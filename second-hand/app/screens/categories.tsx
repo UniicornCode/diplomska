@@ -11,7 +11,7 @@ import { useRouter } from "expo-router";
 import BackButton from "@components/buttons/BackButton";
 import Products from "@/constants/Products";
 import { Dimensions } from "react-native";
-import { useAuth } from "@services/context/AuthContext";
+import { useAuth } from "@/services/context/AuthContext";
 
 export default function Categories() {
 	const router = useRouter();

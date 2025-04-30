@@ -5,12 +5,12 @@ import RatingFooter from "@components/global/RatingFooter";
 import StarRating from "@components/custom/StarRating";
 import SecondaryButton from "@components/buttons/SecondaryButton";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useAuth } from "@services/context/AuthContext";
+import { useAuth } from "@/services/context/AuthContext";
 import { IUser } from "@interfaces/types";
 import { calculatDistanceBetweenUsers } from "@/utils/CalculateDistanceBetweenUsers";
 import { useEffect, useState } from "react";
 import { calculateAverageRating } from "@/utils/CalculateAverageRating";
-import ratingService from "@services/ratingService";
+import ratingService from "@/services/ratingService";
 
 
 export default function Seller() {

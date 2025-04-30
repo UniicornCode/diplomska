@@ -18,7 +18,7 @@ import AddressInput from "@components/inputs/AddressInput";
 import BackButton from "@components/buttons/BackButton";
 import { useRouter } from "expo-router";
 import { IRegister } from "@interfaces/types";
-import { useAuth } from "@services/context/AuthContext";
+import { useAuth } from "@/services/context/AuthContext";
 import CameraScreen from "@screens/camera";
 import PhotoSourceModal from "@/components/custom/PhotoSourceModal";
 import { compressAndConvertToBase64 } from "@/utils/CompressImage";

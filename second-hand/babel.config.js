@@ -13,7 +13,7 @@ module.exports = function (api)
 						'@interfaces': './interfaces',
 						'@components': './components',
 						'@screens': './app/screens',
-						'@services': './app/services',
+						'@services': './services',
 						'@constants': './constants',
 						'@assets': './assets',
 						'@images': './assets/images',

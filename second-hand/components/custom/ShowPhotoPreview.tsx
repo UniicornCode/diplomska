@@ -2,17 +2,21 @@ import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from "react
 import globalStyles from "@assets/css/globalStyles";
 import { Icon } from '@rneui/themed';
 import React from "react";
-import * as FileSystem from 'expo-file-system';
-import { ShowPhotoPreviewProps } from "@/interfaces/types";
 import { compressAndConvertToBase64 } from "@/utils/CompressImage";
+
+export interface ShowPhotoPreviewProps {
+	photo: { uri: string };
+	retakePhoto: () => void;
+	saveImage: (base64Uri: string) => void;
+	closeCamera: () => void;
+}
 
 export default function ShowPhotoPreview({ photo, retakePhoto, saveImage, closeCamera }: ShowPhotoPreviewProps) {
 	const processPhoto = async () => {
 		try {
-			if (!photo?.uri) return;
+			if (!photo.uri) return;
 
 			const compressedBase64 = await compressAndConvertToBase64(photo.uri);
-
 			saveImage(compressedBase64);
 			closeCamera();
 		} catch (error) {
@@ -28,7 +32,7 @@ export default function ShowPhotoPreview({ photo, retakePhoto, saveImage, closeC
 						<Icon name="close" size={40} color="white" type="font-awesome" />
 					</TouchableOpacity>
 					<TouchableOpacity onPress={retakePhoto} style={styles.button}>
-						<Text style={[globalStyles.text_white, styles.text]}>Retake photo</Text>
+						<Text style={[globalStyles.text_white, styles.text]}>Сликај повторно</Text>
 					</TouchableOpacity>
 					<TouchableOpacity onPress={processPhoto} style={styles.button}>
 						<Icon name="save" size={40} color="white" type="font-awesome" />

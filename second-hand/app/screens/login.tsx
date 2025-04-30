@@ -15,7 +15,7 @@ import SecondaryButton from "@components/buttons/SecondaryButton";
 import { useRouter } from "expo-router";
 import BackButton from "@components/buttons/BackButton";
 import { ILogin } from "@interfaces/types";
-import { useAuth } from "@services/context/AuthContext";
+import { useAuth } from "@/services/context/AuthContext";
 
 const initialState = { email: "", password: "" };
 

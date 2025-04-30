@@ -49,30 +49,6 @@ export interface IRating {
 
 export type INewRating = Omit<IRating, "id" | "createdAt">;
 
-export interface ShowPhotoPreviewProps {
-	photo: { uri: string };
-	retakePhoto: () => void;
-	saveImage: (base64Uri: string) => void;
-	closeCamera: () => void;
-}
-
-export interface CameraScreenProps {
-	onCapture: (base64Uri: string) => void;
-	closeCamera: () => void;
-	style?: any;
-}
-
-export interface PhotoSourceModalProps {
-	isVisible: boolean;
-	handleChoice: (selectedSource: string) => void;
-}
-
-export interface StarRatingProps {
-	rating: number;
-	setRating?: (rating: number) => void;
-	isDisabled: boolean;
-}
-
 export type ValidRoutes =
 	| "/"
 	| "/(tabs)"

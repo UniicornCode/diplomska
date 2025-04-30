@@ -4,10 +4,10 @@ import BackButton from "@components/buttons/BackButton";
 import StarRating from "@components/custom/StarRating";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { useAuth } from "@services/context/AuthContext";
+import { useAuth } from "@/services/context/AuthContext";
 import { INewRating, IUser } from "@/interfaces/types";
 import SecondaryButton from "@/components/buttons/SecondaryButton";
-import ratingService from "@/app/services/ratingService";
+import ratingService from "@/services/ratingService";
 
 export default function RatingFormScreen() {
 	const { seller: sellerString } = useLocalSearchParams();

@@ -4,7 +4,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-import { AuthProvider } from '@services/context/AuthContext';
+import { AuthProvider } from '@/services/context/AuthContext';
 import Navbar from '@/components/global/Navbar';
 
 export {

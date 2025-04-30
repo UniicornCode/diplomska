@@ -2,7 +2,7 @@ import React from "react";
 import { Image, StyleSheet, View, TouchableOpacity, StatusBar, SafeAreaView } from "react-native";
 import globalStyles from "@assets/css/globalStyles";
 import { useRouter } from "expo-router";
-import { useAuth } from "@services/context/AuthContext";
+import { useAuth } from "@/services/context/AuthContext";
 
 export default function Navbar() {
 	const router = useRouter();

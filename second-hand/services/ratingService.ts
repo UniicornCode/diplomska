@@ -1,4 +1,4 @@
-import { db } from "@/app/firebase";
+import { db } from "@/services/firebase";
 import { INewRating, IRating } from "@/interfaces/types";
 import { collection, query, where, getDocs, addDoc, deleteDoc, doc, serverTimestamp, onSnapshot } from "firebase/firestore";
 import { Alert } from "react-native";
@@ -24,7 +24,7 @@ const fetchRatingsForSeller = async (sellerId: string): Promise<IRating[]> => {
 const fetchRatingsForUser = async (userId: string): Promise<IRating[]> => {
 	try {
 		const ratingsRef = collection(db, "ratings");
-		const q = query(ratingsRef, where("userId", "==", userId));
+		const q = query(ratingsRef, where("sellerId", "==", userId));
 		const querySnapshot = await getDocs(q);
 
 		const ratings: IRating[] = querySnapshot.docs.map(doc => ({

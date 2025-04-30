@@ -3,53 +3,40 @@ import globalStyles from "@assets/css/globalStyles";
 import BackButton from "@components/buttons/BackButton";
 import UserProductCard from "@components/containers/UserProductCard";
 import React, { useState } from "react";
-import { getFirestore, collection, query, where, getDocs, doc } from "firebase/firestore";
 import { IProduct, IRegister } from "@interfaces/types";
-import { useAuth } from "@services/context/AuthContext";
-import { useFocusEffect } from "expo-router";
+import { useAuth } from "@/services/context/AuthContext";
 import Colors from "@/constants/Colors";
+import productService from "@/services/productService";
+import { useFocusEffect } from "expo-router";
 
 export default function UserListOfProducts() {
 	const { user } = useAuth();
 	const [products, setProducts] = useState<IProduct[]>([]);
-	const [loading, setLoading] = useState(true); // Initialize loading state
-
-	const db = getFirestore();
+	const [loading, setLoading] = useState(true);
 
 	useFocusEffect(() => {
 		let isActive = true;
 
-		const fetchUserProducts = async () => {
+		const loadUserProducts = async () => {
 			if (user) {
-				const userId = user.uid;
-				const productsRef = collection(db, "products");
-				const q = query(productsRef, where("userId", "==", userId));
-
 				try {
-					const snapshot = await getDocs(q);
-					const productList: IProduct[] = [];
-
-					snapshot.forEach((doc) => {
-						const productData = doc.data() as IProduct;
-						productList.push({ ...productData, id: doc.id })
-					})
-
+					const userProducts = await productService.fetchProductsByUser(user.uid);
 					if (isActive) {
-						setProducts(productList);
+						setProducts(userProducts);
 					}
 				} catch (error) {
-					console.error("Error fetching products:", error);
+					console.error("Error loading user products:", error);
 				} finally {
 					if (isActive) {
 						setLoading(false);
 					}
 				}
 			}
-		}
+		};
 
-		fetchUserProducts();
+		loadUserProducts();
 
-		// Clean up on blur/unmount
+		// Cleanup function: Set isActive to false when the component is unmounted or when focus changes
 		return () => {
 			isActive = false;
 		};

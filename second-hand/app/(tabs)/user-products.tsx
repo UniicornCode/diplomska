@@ -1,4 +1,4 @@
-import { useAuth } from "@services/context/AuthContext";
+import { useAuth } from "@/services/context/AuthContext";
 import { useRouter } from "expo-router";
 import UserListOfProducts from "@screens/user-list-of-products";
 import { useEffect } from "react";

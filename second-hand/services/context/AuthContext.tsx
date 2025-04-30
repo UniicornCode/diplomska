@@ -8,7 +8,7 @@ import {
 } from "firebase/auth";
 import { ILogin, IRegister } from "@interfaces/types";
 import { doc, setDoc, onSnapshot } from "firebase/firestore";
-import { auth, db } from "@app/firebase";
+import { auth, db } from "@/services/firebase";
 
 interface AuthContextType {
 	user: User | null;

@@ -12,8 +12,8 @@ import ContactFooter from "@/components/global/ContactFooter";
 import { IProduct, IUser } from "@interfaces/types";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { useAuth } from "@services/context/AuthContext";
-import userService from "@services/userService";
+import { useAuth } from "@/services/context/AuthContext";
+import userService from "@/services/userService";
 
 export default function Product() {
 	const { product: productString } = useLocalSearchParams();

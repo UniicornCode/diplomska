@@ -1,7 +1,12 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Icon } from '@rneui/themed';
-import { StarRatingProps } from '@/interfaces/types';
+
+export interface StarRatingProps {
+	rating: number;
+	setRating?: (rating: number) => void;
+	isDisabled: boolean;
+}
 
 export default function StarRatingComponent({ rating, setRating, isDisabled }: StarRatingProps) {
 	const handlePress = (index: number) => {

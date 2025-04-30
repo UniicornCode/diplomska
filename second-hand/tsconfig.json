@@ -20,7 +20,7 @@
 				"app/screens/*"
 			],
 			"@services/*": [
-				"app/services/*"
+				"services/*"
 			],
 			"@constants/*": [
 				"constants/*"

@@ -1,13 +1,19 @@
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import React, { useState, useRef } from 'react';
-import { Button, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Button, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ShowPhotoPreview from "@components/custom/ShowPhotoPreview";
 import { Icon } from '@rneui/themed';
 import * as ImageManipulator from 'expo-image-manipulator';
 import globalStyles from "@assets/css/globalStyles";
-import { CapturedImage, CameraScreenProps } from '@/interfaces/types';
+import { CapturedImage } from '@/interfaces/types';
 
-export default function CameraScreen({ onCapture, closeCamera, style }: CameraScreenProps) {
+export interface CameraScreenProps {
+	onCapture: (base64Uri: string) => void;
+	closeCamera: () => void;
+	style?: any;
+}
+
+export default function CameraScreen({ onCapture, closeCamera }: CameraScreenProps) {
 	const [facing, setFacing] = useState<CameraType>('back');
 	const [permission, requestPermission] = useCameraPermissions();
 	const cameraRef = useRef<CameraView>(null);
@@ -25,10 +31,10 @@ export default function CameraScreen({ onCapture, closeCamera, style }: CameraSc
 			<View style={globalStyles.background_transparent}>
 				<ImageBackground source={require("@assets/images/background.png")} style={globalStyles.background}>
 					<View style={styles.grand_permission_container}>
-						<Text style={styles.text}>We need your permission to show the camera</Text>
-						<Button onPress={requestPermission} title="Grant Permission" />
+						<Text style={styles.text}>Потребна ни е согласност за да ја отвориме вашата камера.</Text>
+						<Button onPress={requestPermission} title="Дозволи" />
 						<TouchableOpacity onPress={closeCamera}>
-							<Text style={globalStyles.cancel_option}>Cancel</Text>
+							<Text style={globalStyles.cancel_option}>Откажи</Text>
 						</TouchableOpacity>
 					</View>
 				</ImageBackground>
@@ -74,7 +80,7 @@ export default function CameraScreen({ onCapture, closeCamera, style }: CameraSc
 		}
 		catch (error) {
 			console.error("Image manipulation failed:", error);
-			alert("Error processing image.");
+			Alert.alert("Грешка", "Неуспешно процесирање на слика.");
 			return;
 		}
 	};

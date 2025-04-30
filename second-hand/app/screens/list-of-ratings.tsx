@@ -6,10 +6,10 @@ import { useLocalSearchParams } from "expo-router";
 import BackButton from "@/components/buttons/BackButton";
 import globalStyles from "@/assets/css/globalStyles";
 import Colors from "@/constants/Colors";
-import { useAuth } from "@/app/services/context/AuthContext";
+import { useAuth } from "@/services/context/AuthContext";
 import DeleteRatingsModal from "@/components/custom/DeleteRatingModal";
 import { Icon } from "@rneui/themed";
-import ratingService from "@/app/services/ratingService";
+import ratingService from "@/services/ratingService";
 
 export default function RatingList() {
 	const { seller: sellerString } = useLocalSearchParams();

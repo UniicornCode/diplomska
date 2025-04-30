@@ -13,10 +13,8 @@ import globalStyles from "@assets/css/globalStyles";
 import BackButton from "@components/buttons/BackButton";
 import StarRating from "@components/custom/StarRating";
 import MyProductsButton from "@components/buttons/MyProductsButton";
-import { useRouter } from "expo-router";
-import { useAuth } from "@services/context/AuthContext";
-import { getAuth, deleteUser } from "firebase/auth";
-import { getFirestore, doc, deleteDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useAuth } from "@/services/context/AuthContext";
 import { useEffect, useState } from "react";
 import DeleteProfileModal from "@components/custom/DeleteProfileModal";
 import SecondaryButton from "@components/buttons/SecondaryButton";
@@ -24,12 +22,12 @@ import Colors from "@constants/Colors";
 import { calculateAverageRating } from "@/utils/CalculateAverageRating";
 import MyRatingsButton from "@components/buttons/MyRatingsButton";
 import { IUser } from "@interfaces/types";
-import RatingService from "@services/ratingService";
+import RatingService from "@/services/ratingService";
+import userService from "@/services/userService";
 
 export default function UserProfile() {
 	const router = useRouter();
-	const { signOut } = useAuth();
-	const { userData, user } = useAuth();
+	const { signOut, userData, user } = useAuth();
 	const [seller, setSeller] = useState<IUser | null>(null); // Send user data as seller for ratings view
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [averageRating, setAverageRating] = useState<number>(0);
@@ -51,55 +49,29 @@ export default function UserProfile() {
 
 	const logOut = () => {
 		signOut();
-		router.replace({
-			pathname: "/screens/login"
-		});
+		router.replace("/screens/login");
 	};
 
-	const laoadUserRatings = async () => {
+	const loadUserRatings = async () => {
 		if (!user) return;
 
 		const ratings = await RatingService.fetchRatingsForUser(user.uid);
 		const average = calculateAverageRating(ratings.map(r => r.rating));
+		console.log(average)
 		setAverageRating(average);
 	};
 
 	const deleteUserAccount = async () => {
 		try {
-			const auth = getAuth();
-			const db = getFirestore();
-			const user = auth.currentUser;
-
-			if (!user) return;
-
-			// Query all the products for the user
-			const productsRef = collection(db, "products");
-			const q = query(productsRef, where("userId", "==", user.uid));
-			const querySnapshot = await getDocs(q);
-
-			// Delete products related to the user
-			const deletePromises = querySnapshot.docs.map(productDoc =>
-				deleteDoc(doc(db, "products", productDoc.id))
-			);
-			await Promise.all(deletePromises);
-
-			// Delete user
-			await deleteDoc(doc(db, "users", user.uid));
-
-			// Delete Auth user (this must come after Firestore delete)
-			await deleteUser(user);
-
-			// Navigate to login
-			router.replace({
-				pathname: "/screens/login"
-			})
+			await userService.deleteUserAccount();
+			router.replace("/(tabs)");
 		} catch (error: any) {
 			console.error("Error deleting account:", error.message);
 		}
 	};
 
 	useEffect(() => {
-		laoadUserRatings();
+		loadUserRatings();
 	}, []);
 
 	useEffect(() => {
@@ -177,7 +149,7 @@ export default function UserProfile() {
 						<SecondaryButton
 							title="Избриши Профил"
 							onPress={() => setShowDeleteModal(true)}
-							background={Colors.deleteColor}
+							backgroundColor={Colors.deleteColor}
 						/>
 					</View>
 				</ScrollView>

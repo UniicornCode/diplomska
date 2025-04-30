@@ -2,10 +2,10 @@ import { ActivityIndicator, Alert, ImageBackground, ScrollView, StyleSheet, Text
 import SimpleProductCard from "@components/containers/SimpleProductCard";
 import BackButton from "@components/buttons/BackButton";
 import globalStyles from "@assets/css/globalStyles";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { IProduct } from "@interfaces/types";
-import productService from "../services/productService";
+import productService from "@services/productService";
 
 export default function ListOfProducts() {
 	const { category, navigatedFromCreatedProduct } = useLocalSearchParams<{ category: string, navigatedFromCreatedProduct: string }>();
