@@ -8,7 +8,7 @@ export default function RatingFooter(seller: IUser) {
 
 	const openRatingForm = () => {
 		router.push({
-			pathname: "/screens/rating/rating-form",
+			pathname: "/screens/rating-form",
 			params: {
 				seller: JSON.stringify(seller)
 			}

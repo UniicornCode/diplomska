@@ -1,51 +1,26 @@
-import { ActivityIndicator, ImageBackground, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, ImageBackground, ScrollView, StyleSheet, Text, View } from "react-native";
 import SimpleProductCard from "@components/containers/SimpleProductCard";
 import BackButton from "@components/buttons/BackButton";
 import globalStyles from "@assets/css/globalStyles";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { IProduct } from "@interfaces/types";
-import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
-
+import productService from "../services/productService";
 
 export default function ListOfProducts() {
 	const { category, navigatedFromCreatedProduct } = useLocalSearchParams<{ category: string, navigatedFromCreatedProduct: string }>();
-	const router = useRouter();
-
 	const [products, setProducts] = useState<IProduct[]>([]);
 	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
-
-	const fetchProductsByCategory = async (category: string): Promise<IProduct[]> => {
-		try {
-			const db = getFirestore(); // Initialize Firestore
-			const productsRef = collection(db, "products"); // Reference to 'products' collection
-			const q = query(productsRef, where("category", "==", category)); // Firestore query
-
-			const snapshot = await getDocs(q);
-			const products: IProduct[] = [];
-
-			snapshot.forEach((doc) => {
-				products.push({ id: doc.id, ...doc.data() } as IProduct);
-			});
-
-			return products;
-		} catch (error) {
-			console.error("Error fetching products:", error);
-			throw error;
-		}
-	};
 
 	useEffect(() => {
 		const effect = async () => {
 			setLoading(true);
-			setError(null);
 
 			try {
-				const prod = await fetchProductsByCategory(category);
+				const prod = await productService.fetchProductsByCategory(category);
 				setProducts(prod);
 			} catch (error) {
-				setError("Не успеавме да ги вчитаме производите. Обидете се повторно.");
+				Alert.alert("Грешка", "Не успеавме да ги вчитаме производите. Обидете се повторно.")
 			} finally {
 				setLoading(false);
 			}
@@ -57,7 +32,7 @@ export default function ListOfProducts() {
 		<View style={[globalStyles.background_transparent]}>
 			<ImageBackground source={require("@assets/images/background.png")} style={globalStyles.background}>
 				<ScrollView>
-					<BackButton title={"Назад"} screen={navigatedFromCreatedProduct == "true" ? "/(tabs)" : undefined} />
+					<BackButton title={"Назад"} screen={navigatedFromCreatedProduct === "true" ? "/(tabs)" : undefined} />
 					<View style={styles.center}>
 						<Text style={styles.text}>{category}</Text>
 					</View>
@@ -70,14 +45,7 @@ export default function ListOfProducts() {
 							))}
 						</>
 					) : (
-						<View
-							style={{
-								flex: 1,
-								backgroundColor: "transparent",
-								justifyContent: "center",
-								alignItems: "center",
-								flexDirection: "row",
-							}}>
+						<View style={styles.description_container}>
 							<Text style={styles.description}>Не се пронајдени производи за ова категорија</Text>
 						</View>
 					)}
@@ -104,5 +72,12 @@ const styles = StyleSheet.create({
 		marginVertical: 20,
 		textAlign: 'center',
 		fontSize: 18
+	},
+	description_container: {
+		flex: 1,
+		backgroundColor: "transparent",
+		justifyContent: "center",
+		alignItems: "center",
+		flexDirection: "row",
 	}
 });

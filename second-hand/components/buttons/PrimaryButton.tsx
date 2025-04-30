@@ -1,7 +1,7 @@
 import React from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import globalStyles from "@assets/css/globalStyles";
-import { useNavigation, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { ValidRoutes } from "@/interfaces/types";
 
 interface IProps {
@@ -15,7 +15,7 @@ export default function PrimaryButton({ title, screen }: IProps) {
 	const handleNavigation = () => {
 		router.push(screen)
 	};
-	
+
 	return (
 		<TouchableOpacity
 			style={[globalStyles.primary_button, globalStyles.shadow]}

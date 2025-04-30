@@ -1,5 +1,5 @@
 import { db } from "@/app/firebase";
-import { IRating } from "@/interfaces/types";
+import { INewRating, IRating } from "@/interfaces/types";
 import { collection, query, where, getDocs, addDoc, deleteDoc, doc, serverTimestamp, onSnapshot } from "firebase/firestore";
 import { Alert } from "react-native";
 
@@ -40,14 +40,7 @@ const fetchRatingsForUser = async (userId: string): Promise<IRating[]> => {
 	}
 }
 
-const addRating = async (ratingData: {
-	userId: string;
-	userName: string;
-	sellerId: string;
-	sellerName: string;
-	rating: number;
-	comment: string;
-}): Promise<void> => {
+const addRating = async (ratingData: INewRating): Promise<void> => {
 	try {
 		await addDoc(collection(db, "ratings"), {
 			...ratingData,

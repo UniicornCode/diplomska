@@ -76,7 +76,7 @@ export default function UserListOfProducts() {
 									style={[
 										styles.space_between,
 										index === products.length - 1 && { marginBottom: 0 } // no margin after last card
-										]}>
+									]}>
 									<UserProductCard key={product.id} {...product} />
 								</View>
 							))

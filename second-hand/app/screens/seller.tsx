@@ -10,13 +10,13 @@ import { IUser } from "@interfaces/types";
 import { calculatDistanceBetweenUsers } from "@/utils/CalculateDistanceBetweenUsers";
 import { useEffect, useState } from "react";
 import { calculateAverageRating } from "@/utils/CalculateAverageRating";
-import RatingService from "../services/ratingService";
+import ratingService from "@services/ratingService";
 
 
 export default function Seller() {
 	const router = useRouter();
 	const { seller: sellerString } = useLocalSearchParams();
-	const seller: IUser = sellerString ? JSON.parse(sellerString as string) : {};
+	const seller: IUser | null = sellerString ? JSON.parse(sellerString as string) : null;
 	const { userData, user } = useAuth();
 	const [averageRating, setAverageRating] = useState<number>(0);
 
@@ -28,15 +28,15 @@ export default function Seller() {
 	};
 
 	useEffect(() => {
-		if (!seller.userId) return;
+		if (!seller) return;
 
-		const unsubscribe = RatingService.listenToSellerRatings(seller.userId, (ratings) => {
+		const unsubscribe = ratingService.listenToSellerRatings(seller.userId, (ratings) => {
 			const avg = calculateAverageRating(ratings);
 			setAverageRating(avg);
 		})
 
 		return () => unsubscribe();
-	}, [seller.userId]);
+	}, [seller?.userId]);
 
 	return (
 		<View style={globalStyles.background_transparent}>
@@ -74,7 +74,7 @@ export default function Seller() {
 						</View>
 					</View>
 				</ScrollView>
-				{user?.uid !== seller?.userId && <RatingFooter {...seller} />}
+				{user?.uid !== seller?.userId && seller && <RatingFooter {...seller} />}
 			</ImageBackground>
 		</View>
 	);

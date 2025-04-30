@@ -1,9 +1,13 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import globalStyles from "@assets/css/globalStyles";
-import { useNavigation, useRouter } from "expo-router";
-import { IRegister, IUser } from "@interfaces/types";
+import { useRouter } from "expo-router";
+import { IUser } from "@interfaces/types";
 
-export default function ContactFooter(seller: IUser) {
+interface IProps {
+	seller: IUser
+}
+
+export default function ContactFooter({ seller }: IProps) {
 	const router = useRouter();
 
 	const handleSeller = () => {

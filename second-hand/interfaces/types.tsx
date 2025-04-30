@@ -47,6 +47,8 @@ export interface IRating {
 	createdAt: any;
 }
 
+export type INewRating = Omit<IRating, "id" | "createdAt">;
+
 export interface ShowPhotoPreviewProps {
 	photo: { uri: string };
 	retakePhoto: () => void;

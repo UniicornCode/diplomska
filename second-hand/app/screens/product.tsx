@@ -9,12 +9,11 @@ import {
 import globalStyles from "@/assets/css/globalStyles";
 import BackButton from "@/components/buttons/BackButton";
 import ContactFooter from "@/components/global/ContactFooter";
-import { IProduct, IRegister, IUser } from "@interfaces/types";
+import { IProduct, IUser } from "@interfaces/types";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "@services/context/AuthContext";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@app/firebase"
+import userService from "@services/userService";
 
 export default function Product() {
 	const { product: productString } = useLocalSearchParams();
@@ -22,29 +21,10 @@ export default function Product() {
 	const { user } = useAuth();
 	const [seller, setSeller] = useState<IUser>();
 
-	const fetchSellerData = async (userId: string): Promise<IUser | null> => {
-		try {
-			const userRef = doc(db, "users", userId);
-			const snapshot = await getDoc(userRef);
-
-			// If the user data exists, return it. Otherwise, return null or throw an error.
-			if (snapshot.exists()) {
-				const userData = snapshot.data() as IRegister;
-				return { ...userData, userId };
-			} else {
-				console.error(`User with ID ${userId} not found.`);
-				return null;
-			}
-		} catch (error) {
-			console.error("Error fetching user data:", error)
-			return null;
-		}
-	};
-
 	useEffect(() => {
 		const effect = async () => {
 			if (product.userId) {
-				const userData = await fetchSellerData(product.userId);
+				const userData = await userService.fetchUserData(product.userId);
 				if (userData) {
 					setSeller(userData);
 				}
@@ -84,7 +64,7 @@ export default function Product() {
 
 								<View style={styles.row}>
 									<Text style={styles.title} numberOfLines={1}>Боја</Text>
-									<Text style={[styles.color, {backgroundColor: product.color}]} numberOfLines={1} ellipsizeMode="tail"></Text>
+									<Text style={[styles.color, { backgroundColor: product.color }]} numberOfLines={1} ellipsizeMode="tail"></Text>
 								</View>
 							</View>
 						</View>
@@ -94,7 +74,8 @@ export default function Product() {
 					</View>
 				</ScrollView>
 			</ImageBackground>
-			{user?.uid !== seller?.userId && <ContactFooter {...seller} />}
+			{/* Check if the user that is logged in is not the seller of this product, an the seller exists and then show the ContactFooter  */}
+			{user?.uid !== seller?.userId && seller && <ContactFooter seller={seller} />}
 		</View>
 	);
 }

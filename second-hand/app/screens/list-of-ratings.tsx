@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet, ImageBackground, Alert } from "react-native";
-import { getFirestore, collection, query, where, getDocs, doc, deleteDoc } from "firebase/firestore";
-import StarRating from "@components/custom/StarRating"; // use your existing star rating component
+import StarRating from "@components/custom/StarRating";
 import { IRating, IUser } from "@/interfaces/types";
 import { useLocalSearchParams } from "expo-router";
 import BackButton from "@/components/buttons/BackButton";
@@ -10,19 +9,23 @@ import Colors from "@/constants/Colors";
 import { useAuth } from "@/app/services/context/AuthContext";
 import DeleteRatingsModal from "@/components/custom/DeleteRatingModal";
 import { Icon } from "@rneui/themed";
-import RatingService from "@/app/services/ratingService";
+import ratingService from "@/app/services/ratingService";
 
 export default function RatingList() {
 	const { seller: sellerString } = useLocalSearchParams();
-	const seller: IUser = sellerString ? JSON.parse(sellerString as string) : {};
+	const seller: IUser | null = sellerString ? JSON.parse(sellerString as string) : {};
 	const [ratings, setRatings] = useState<IRating[]>([]);
 	const { user } = useAuth();
 	const [isModalVisible, setModalVisible] = useState(false);
 	const [ratingToDelete, setRatingToDelete] = useState<string | null>(null);
 
+	// Check if seller exists before proceeding
+	if (!seller)
+		return;
+
 	const handleDeleteRating = async (ratingId: string) => {
 		try {
-			await RatingService.deleteRating(ratingId);
+			await ratingService.deleteRating(ratingId);
 			setRatings(prevRatings => prevRatings.filter((rating) => rating.id !== ratingId)); // Remove rating from state
 			setModalVisible(false);
 			Alert.alert("Успешно", "Оценката е успешно избришана.");
@@ -46,10 +49,11 @@ export default function RatingList() {
 	useEffect(() => {
 		const loadRatings = async () => {
 			try {
-				const results = await RatingService.fetchRatingsForSeller(seller.userId);
+				const results = await ratingService.fetchRatingsForSeller(seller.userId);
 				setRatings(results);
 			} catch (error) {
-				console.error("Грешка при превземање на оценки:", error);
+				console.error("Error recovering ratings: ", error);
+				Alert.alert("Грешка", "Настана грешка при превземање на оценки.")
 			}
 		};
 

@@ -25,15 +25,11 @@ export default function DeleteRatingsModal({
 			<View style={styles.modalOverlay}>
 				<View style={styles.modalContent}>
 					<Text style={styles.modalText}>
-						Дали сте сигурни дека сакате да го избришете овој рејтинг?
+						Дали сте сигурни дека сакате да ја избришете оваа оценка?
 					</Text>
 
 					<SecondaryButton title="Откажи" onPress={onCancel} />
-					<SecondaryButton
-						title="Потврди"
-						onPress={() => onConfirm()}
-						background={Colors.deleteColor}
-					/>
+					<SecondaryButton title="Потврди" onPress={onConfirm} backgroundColor={Colors.deleteColor} />
 				</View>
 			</View>
 		</Modal>

@@ -29,7 +29,7 @@ export default function DeleteProfileModal({ visible, onConfirm, onCancel }: Del
 					<SecondaryButton
 						title="Потврди"
 						onPress={onConfirm}
-						background={Colors.deleteColor}
+						backgroundColor={Colors.deleteColor}
 					/>
 				</View>
 			</View>

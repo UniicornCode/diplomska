@@ -5,9 +5,9 @@ import StarRating from "@components/custom/StarRating";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { useAuth } from "@services/context/AuthContext";
-import { IUser } from "@/interfaces/types";
+import { INewRating, IUser } from "@/interfaces/types";
 import SecondaryButton from "@/components/buttons/SecondaryButton";
-import RatingService from "@/app/services/ratingService";
+import ratingService from "@/app/services/ratingService";
 
 export default function RatingFormScreen() {
 	const { seller: sellerString } = useLocalSearchParams();
@@ -18,27 +18,29 @@ export default function RatingFormScreen() {
 	const [comment, setComment] = useState("");
 
 	const handleSubmit = async () => {
-		if (!user?.uid) {
-			console.error("Корисникот не е дефиниран. Не може да се остави оценка.");
+		// Check if there is user logged in
+		if (!user) {
+			Alert.alert("Грешка", "Нема најавен корисник.")
 			return;
 		}
 
+		// Check if both rating and comment are filled out
 		if (!rating || !comment.trim()) {
 			Alert.alert("Грешка", "Ве молиме одберете оценка и пополнете го описот.");
 			return;
 		}
 
-		const ratingData = {
+		const ratingData: INewRating = {
 			userId: user.uid,
 			userName: userData?.name + " " + userData?.surname,
 			sellerId: seller.userId,
 			sellerName: seller.name,
 			rating,
 			comment,
-		}
+		};
 
 		try {
-			await RatingService.addRating(ratingData);
+			await ratingService.addRating(ratingData);
 			Alert.alert("Успешно", "Вашата оценка е зачувана.");
 			router.back();
 		} catch (error) {
