@@ -1,8 +1,7 @@
 import { db } from "@/services/firebase";
 import { IRegister, IUser } from "@/interfaces/types";
 import { collection, deleteDoc, doc, getDoc, getDocs, query, where } from "firebase/firestore";
-import { deleteUser } from "firebase/auth";
-import { useAuth } from "@services/context/AuthContext";
+import { deleteUser, User } from "firebase/auth";
 
 const fetchUserData = async (userId: string): Promise<IUser | null> => {
 	try {
@@ -39,10 +38,10 @@ const fetchUserAddress = async (userId: string): Promise<{ latitude: string; lon
 	}
 };
 
-const deleteUserAccount = async () => {
-	const { user } = useAuth();
-
-	if (!user) return;
+const deleteUserAccount = async (user: User | null) => {
+	if (!user) {
+		return null
+	}
 
 	// Delete all user products
 	const productsRef = collection(db, "products");

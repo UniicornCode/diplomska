@@ -1,4 +1,4 @@
-import { ActivityIndicator, ImageBackground, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, ImageBackground, ScrollView, StyleSheet, Text, View } from "react-native";
 import globalStyles from "@assets/css/globalStyles";
 import BackButton from "@components/buttons/BackButton";
 import UserProductCard from "@components/containers/UserProductCard";
@@ -8,11 +8,37 @@ import { useAuth } from "@/services/context/AuthContext";
 import Colors from "@/constants/Colors";
 import productService from "@/services/productService";
 import { useFocusEffect } from "expo-router";
+import DeleteProducteModal from "@/components/custom/DeleteProductModal";
 
 export default function UserListOfProducts() {
 	const { user } = useAuth();
 	const [products, setProducts] = useState<IProduct[]>([]);
+	const [isModalVisible, setModalVisible] = useState(false);
+	const [productToDelete, setProductToDelete] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
+
+	const handleDeleteProduct = async (productId: string) => {
+		try {
+			await productService.deleteProduct(productId);
+			setProducts(prevProducts => prevProducts.filter((product) => product.id !== productId)); // Remove product from state
+			setModalVisible(false);
+			Alert.alert("Успешно", "Производот е успешно избришан.");
+		} catch (error) {
+			Alert.alert("Грешка", "Неуспешно бришење на производ.");
+		}
+	};
+
+	// Function to show the modal for confirmation
+	const showDeleteModal = (productId: string) => {
+		setProductToDelete(productId);
+		setModalVisible(true);
+	};
+
+	// Function to hide the modal
+	const hideDeleteModal = () => {
+		setModalVisible(false);
+		setProductToDelete(null);
+	};
 
 	useFocusEffect(() => {
 		let isActive = true;
@@ -64,7 +90,7 @@ export default function UserListOfProducts() {
 										styles.space_between,
 										index === products.length - 1 && { marginBottom: 0 } // no margin after last card
 									]}>
-									<UserProductCard key={product.id} {...product} />
+									<UserProductCard key={product.id} product={product} deleteModal={() => showDeleteModal(product.id!)} />
 								</View>
 							))
 						) : (
@@ -76,6 +102,16 @@ export default function UserListOfProducts() {
 						)}
 					</View>
 				</ScrollView>
+
+				<DeleteProducteModal
+					visible={isModalVisible}
+					onConfirm={() => {
+						if (productToDelete) {
+							handleDeleteProduct(productToDelete); // Confirm deletion
+						}
+					}}
+					onCancel={hideDeleteModal}
+				/>
 			</ImageBackground>
 		</View>
 	);
@@ -91,6 +127,7 @@ const styles = StyleSheet.create({
 		marginVertical: 20,
 		textAlign: "center",
 		fontSize: 18,
+		color: "white"
 	},
 	empty_box: {
 		flex: 1,

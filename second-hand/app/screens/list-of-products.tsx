@@ -46,7 +46,7 @@ export default function ListOfProducts() {
 						</>
 					) : (
 						<View style={styles.description_container}>
-							<Text style={styles.description}>Не се пронајдени производи за ова категорија</Text>
+							<Text style={styles.description}>Не се пронајдени производи за ова категорија.</Text>
 						</View>
 					)}
 				</ScrollView>

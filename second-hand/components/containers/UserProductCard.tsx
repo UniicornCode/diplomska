@@ -1,13 +1,18 @@
 import React from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
 import { IProduct } from "@interfaces/types";
-import { getFirestore, deleteDoc, doc } from "@firebase/firestore";
 import Colors from "@/constants/Colors";
 import globalStyles from "@/assets/css/globalStyles";
 import { Icon } from "@rneui/themed";
+import productService from "@/services/productService";
 
-export default function UserProductCard(product: IProduct) {
+interface UserProductCardProps {
+	product: IProduct;
+	deleteModal: () => void;
+}
+
+export default function UserProductCard({ product, deleteModal }: UserProductCardProps) {
 	const router = useRouter();
 
 	const openProductDetails = () => {
@@ -28,18 +33,6 @@ export default function UserProductCard(product: IProduct) {
 		}
 	};
 
-	const deleteProduct = async () => {
-		if (product.id) {
-			try {
-				const db = getFirestore();
-				await deleteDoc(doc(db, "products", product.id));
-				alert("Успешно избришан производ!");
-			} catch (error: any) {
-				alert(error.message);
-			}
-		}
-	};
-
 	return (
 		<View style={globalStyles.white_container}>
 			<TouchableOpacity onPress={openProductDetails} style={styles.row}>
@@ -53,7 +46,7 @@ export default function UserProductCard(product: IProduct) {
 					<TouchableOpacity onPress={editProduct} style={styles.iconButton}>
 						<Icon name="pencil" type="entypo" size={24} color="black" />
 					</TouchableOpacity>
-					<TouchableOpacity onPress={deleteProduct} style={styles.iconButton}>
+					<TouchableOpacity onPress={() => deleteModal()} style={styles.iconButton}>
 						<Icon name="delete" type="materialicons" size={24} color={Colors.deleteColor} />
 					</TouchableOpacity>
 				</View>

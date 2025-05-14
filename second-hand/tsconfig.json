@@ -36,6 +36,9 @@
 			],
 			"@css/*": [
 				"assets/css/*"
+			],
+			"@firebase/auth": [
+				"./node_modules/@firebase/auth/dist/index.rn.d.ts"
 			]
 		}
 	},

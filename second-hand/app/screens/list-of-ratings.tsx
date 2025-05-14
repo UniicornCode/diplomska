@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet, ImageBackground, Alert } from "react-native";
+import { View, Text, FlatList, StyleSheet, ImageBackground, Alert, ActivityIndicator } from "react-native";
 import StarRating from "@components/custom/StarRating";
 import { IRating, IUser } from "@/interfaces/types";
 import { useLocalSearchParams } from "expo-router";
@@ -18,6 +18,7 @@ export default function RatingList() {
 	const { user } = useAuth();
 	const [isModalVisible, setModalVisible] = useState(false);
 	const [ratingToDelete, setRatingToDelete] = useState<string | null>(null);
+	const [loading, setLoading] = useState(false);
 
 	// Check if seller exists before proceeding
 	if (!seller)
@@ -48,12 +49,16 @@ export default function RatingList() {
 
 	useEffect(() => {
 		const loadRatings = async () => {
+			setLoading(true);
+
 			try {
 				const results = await ratingService.fetchRatingsForSeller(seller.userId);
 				setRatings(results);
 			} catch (error) {
 				console.error("Error recovering ratings: ", error);
 				Alert.alert("Грешка", "Настана грешка при превземање на оценки.")
+			} finally {
+				setLoading(false);
 			}
 		};
 
@@ -65,33 +70,41 @@ export default function RatingList() {
 			<ImageBackground source={require("@assets/images/background.png")} style={globalStyles.background}>
 				<Text style={[globalStyles.wide_title, styles.title]}>Оценки за {seller.name}</Text>
 				<BackButton title={"Назад"} />
-				<FlatList
-					contentContainerStyle={styles.containerFlatList}
-					style={styles.container}
-					data={ratings}
-					keyExtractor={(item) => item.id}
-					renderItem={({ item }) => (
-						<View style={[globalStyles.shadow, styles.ratingsContainer]}>
-							<View style={styles.card}>
-								<Text style={styles.user_name}>Оценка од: {item.userName}</Text>
-								<StarRating rating={item.rating} isDisabled={true} />
-								<Text style={styles.description}>{item.comment}</Text>
-								<Text style={styles.timestamp}>
-									{new Date(item.createdAt?.toDate?.()).toLocaleDateString()}
-								</Text>
+				{loading ? (
+					<ActivityIndicator size="large" color="#0000ff" />
+				) : ratings.length ? (
+					<>
+						<FlatList
+							contentContainerStyle={styles.containerFlatList}
+							style={styles.container}
+							data={ratings}
+							keyExtractor={(item) => item.id}
+							renderItem={({ item }) => (
+								<View style={[globalStyles.shadow, styles.ratingsContainer]}>
+									<View style={styles.card}>
+										<Text style={styles.user_name}>Оценка од: {item.userName}</Text>
+										<StarRating rating={item.rating} isDisabled={true} />
+										<Text style={styles.description}>{item.comment}</Text>
+										<Text style={styles.timestamp}>
+											{new Date(item.createdAt?.toDate?.()).toLocaleDateString()}
+										</Text>
 
-								{user?.uid === item.userId && (
-									<Icon name="delete"
-										style={styles.deleteButton}
-										type="materialicons"
-										size={24}
-										color={Colors.deleteColor}
-										onPress={() => showDeleteModal(item.id)} />
-								)}
-							</View>
-						</View>
-					)}
-				/>
+										{user?.uid === item.userId && (
+											<Icon name="delete"
+												style={styles.deleteButton}
+												type="materialicons"
+												size={24}
+												color={Colors.deleteColor}
+												onPress={() => showDeleteModal(item.id)} />
+										)}
+									</View>
+								</View>
+							)}
+						/>
+					</>) : (
+					<Text style={styles.no_ratings_description}>Не се пронајдени оценки.</Text>
+				)}
+
 
 				<DeleteRatingsModal
 					visible={isModalVisible}
@@ -137,6 +150,12 @@ const styles = StyleSheet.create({
 	description: {
 		fontSize: 16,
 		marginVertical: 10,
+	},
+	no_ratings_description: {
+		alignSelf: 'center',
+		marginVertical: 20,
+		textAlign: 'center',
+		fontSize: 18
 	},
 	timestamp: {
 		fontSize: 12,

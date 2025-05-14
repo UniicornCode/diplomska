@@ -13,7 +13,7 @@ import globalStyles from "@assets/css/globalStyles";
 import BackButton from "@components/buttons/BackButton";
 import StarRating from "@components/custom/StarRating";
 import MyProductsButton from "@components/buttons/MyProductsButton";
-import { useFocusEffect, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useAuth } from "@/services/context/AuthContext";
 import { useEffect, useState } from "react";
 import DeleteProfileModal from "@components/custom/DeleteProfileModal";
@@ -62,7 +62,7 @@ export default function UserProfile() {
 
 	const deleteUserAccount = async () => {
 		try {
-			await userService.deleteUserAccount();
+			await userService.deleteUserAccount(user);
 			router.replace("/(tabs)");
 		} catch (error: any) {
 			console.error("Error deleting account:", error.message);

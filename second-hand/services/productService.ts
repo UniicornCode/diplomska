@@ -1,5 +1,5 @@
 import { db } from "@/services/firebase";
-import { collection, query, where, getDocs, addDoc, setDoc, doc } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc, setDoc, doc, deleteDoc } from "firebase/firestore";
 import { IProduct } from "@/interfaces/types";
 import { Alert } from "react-native";
 
@@ -59,8 +59,23 @@ const addNewProduct = async (product: IProduct, userId: string): Promise<void> =
 	}
 }
 
+const deleteProduct = async (productId: string | null) => {
+	if (!productId) {
+		return null
+	}
+
+	try {
+		const productRef = doc(db, "products", productId);
+		await deleteDoc(productRef);
+	} catch (error) {
+		console.error("Error deleting product:", error);
+		throw error;
+	}
+};
+
 export default {
 	fetchProductsByCategory,
 	fetchProductsByUser,
-	addNewProduct
+	addNewProduct,
+	deleteProduct
 };

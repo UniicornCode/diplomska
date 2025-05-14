@@ -1,4 +1,5 @@
 import {
+	Alert,
 	Image,
 	ImageBackground,
 	KeyboardAvoidingView, Modal,
@@ -71,7 +72,7 @@ export default function RegisterScreen() {
 		longitude: string
 	}) => {
 		changeHandlerAddress({ latitude: address.latitude, longitude: address.longitude })
-		alert("Успешно ја ажуриравте вашата локација");
+		Alert.alert("Успешно ја ажуриравте вашата локација");
 	}
 
 	const handleModalSelection = async (selectedSource: string) => {
